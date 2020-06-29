@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="隔壁董小花同学">
 <meta property="og:description" content="基本命令的使用1234567获取垃圾回收器的类型和系统参数 &#x2F;&#x2F; jmap -heap pid  查看应用启动的参数&#x2F;&#x2F; jinfo -flags pid  查看当前各个代区的容量和使用量情况 &#x2F;&#x2F; jstat  FGC、YGC的总次数和总耗时 &#x2F;&#x2F; jstat  立即生成Dump文件 &#x2F;&#x2F;jmap">
 <meta property="article:published_time" content="2019-06-14T03:08:11.222Z">
-<meta property="article:modified_time" content="2019-07-19T09:53:30.936Z">
+<meta property="article:modified_time" content="2020-06-29T11:25:01.528Z">
 <meta property="article:author" content="xiaohua Dong">
 <meta property="article:tag" content="jstack jmap jstat">
 <meta name="twitter:card" content="summary">
@@ -362,7 +362,10 @@
 </ul>
 <h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>  jmap heap pid：查看 JDK的概况的最好的一个参数<br>  Jmap是一个可以输出所有内存中对象的工具，甚至可以将VM 中的heap，以二进制输出成文本.<br>  jmap -dump:format=b,file=outfile PID 可以将指定进程的内存heap输出出来到outfile文件里.  </p>
 <ul>
-<li>命令格式<br>jmap [ option ] pid<br>jmap [ option ] executable core<br>jmap [ option ] [server-id@]remote-hostname-or-IP<br>参数说明<br>options：<br>executable :产生core dump的java可执行程序;<br>core 将被打印信息的core dump文件;<br>remote-hostname-or-IP 远程debug服务的主机名或ip;<br>server-id 唯一id,假如一台主机上多个远程debug服务;  </li>
+<li><p>命令格式<br>jmap [ option ] pid<br>jmap [ option ] executable core<br>jmap [ option ] [server-id@]remote-hostname-or-IP<br>参数说明<br>options：<br>executable :产生core dump的java可执行程序;<br>core 将被打印信息的core dump文件;<br>remote-hostname-or-IP 远程debug服务的主机名或ip;<br>server-id 唯一id,假如一台主机上多个远程debug服务;  </p>
+</li>
+<li><p>dump 文件分析<br>导出整个JVM 中内存信息： jmap -dump:format=b,file=文件名.dump [pid]</p>
+</li>
 </ul>
 
       

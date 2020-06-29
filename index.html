@@ -1788,7 +1788,10 @@
 </ul>
 <h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>  jmap heap pid：查看 JDK的概况的最好的一个参数<br>  Jmap是一个可以输出所有内存中对象的工具，甚至可以将VM 中的heap，以二进制输出成文本.<br>  jmap -dump:format=b,file=outfile PID 可以将指定进程的内存heap输出出来到outfile文件里.  </p>
 <ul>
-<li>命令格式<br>jmap [ option ] pid<br>jmap [ option ] executable core<br>jmap [ option ] [server-id@]remote-hostname-or-IP<br>参数说明<br>options：<br>executable :产生core dump的java可执行程序;<br>core 将被打印信息的core dump文件;<br>remote-hostname-or-IP 远程debug服务的主机名或ip;<br>server-id 唯一id,假如一台主机上多个远程debug服务;  </li>
+<li><p>命令格式<br>jmap [ option ] pid<br>jmap [ option ] executable core<br>jmap [ option ] [server-id@]remote-hostname-or-IP<br>参数说明<br>options：<br>executable :产生core dump的java可执行程序;<br>core 将被打印信息的core dump文件;<br>remote-hostname-or-IP 远程debug服务的主机名或ip;<br>server-id 唯一id,假如一台主机上多个远程debug服务;  </p>
+</li>
+<li><p>dump 文件分析<br>导出整个JVM 中内存信息： jmap -dump:format=b,file=文件名.dump [pid]</p>
+</li>
 </ul>
 
           
