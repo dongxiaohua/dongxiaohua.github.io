@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="mybatis," />
+  <meta name="keywords" content="rpc grpc," />
 
 
 
@@ -79,16 +79,16 @@
 
 
 
-<meta name="description" content="Mybatis缓存机制mybatis提供了缓存机制减轻数据库压力，提高数据库性能mybatis的缓存分为两级：一级缓存、二级缓存一级缓存是SqlSession级别的缓存，缓存的数据只在SqlSession内有效二级缓存是mapper级别的缓存，同一个namespace公用这一个缓存，所以对SqlSession是共享的   一级缓存mybatis的一级缓存是SqlSession级别的缓存，在操作数据">
+<meta name="description" content="官方文档：http:&#x2F;&#x2F;grpc.mydoc.io&#x2F;proto文件： syntax &#x3D; &quot;proto3&quot;;  &#x2F;&#x2F;以外部类模式生成 option java_multiple_files &#x3D; true; &#x2F;&#x2F;所在包名 option java_package &#x3D; &quot;cn.dxh.practice&quot;; &#x2F;&#x2F;最外层类名称 option java_outer_classname &#x3D; &quot;PracticeSer">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mybatis的缓存机制及其作用的原理">
-<meta property="og:url" content="http://yoursite.com/2019/09/26/database/mybatis/index.html">
+<meta property="og:title" content="GRPC">
+<meta property="og:url" content="http://yoursite.com/2018/12/21/java/grpc_java/index.html">
 <meta property="og:site_name" content="隔壁董小花同学">
-<meta property="og:description" content="Mybatis缓存机制mybatis提供了缓存机制减轻数据库压力，提高数据库性能mybatis的缓存分为两级：一级缓存、二级缓存一级缓存是SqlSession级别的缓存，缓存的数据只在SqlSession内有效二级缓存是mapper级别的缓存，同一个namespace公用这一个缓存，所以对SqlSession是共享的   一级缓存mybatis的一级缓存是SqlSession级别的缓存，在操作数据">
-<meta property="article:published_time" content="2019-09-26T11:30:14.990Z">
-<meta property="article:modified_time" content="2019-09-29T04:07:13.406Z">
+<meta property="og:description" content="官方文档：http:&#x2F;&#x2F;grpc.mydoc.io&#x2F;proto文件： syntax &#x3D; &quot;proto3&quot;;  &#x2F;&#x2F;以外部类模式生成 option java_multiple_files &#x3D; true; &#x2F;&#x2F;所在包名 option java_package &#x3D; &quot;cn.dxh.practice&quot;; &#x2F;&#x2F;最外层类名称 option java_outer_classname &#x3D; &quot;PracticeSer">
+<meta property="article:published_time" content="2018-12-21T03:36:57.321Z">
+<meta property="article:modified_time" content="2019-01-17T03:06:17.438Z">
 <meta property="article:author" content="xiaohua Dong">
-<meta property="article:tag" content="mybatis">
+<meta property="article:tag" content="rpc grpc">
 <meta name="twitter:card" content="summary">
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/09/26/database/mybatis/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/21/java/grpc_java/"/>
 
 
 
 
 
-  <title>Mybatis的缓存机制及其作用的原理 | 隔壁董小花同学</title>
+  <title>GRPC | 隔壁董小花同学</title>
   
 
 
@@ -252,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/26/database/mybatis/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/java/grpc_java/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xiaohua Dong">
@@ -269,7 +269,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Mybatis的缓存机制及其作用的原理</h1>
+          <h1 class="post-title" itemprop="name headline">GRPC</h1>
         
 
         <div class="post-meta">
@@ -281,8 +281,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-26T19:30:14+08:00">
-                2019-09-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:57+08:00">
+                2018-12-21
               </time>
             
 
@@ -304,8 +304,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/database/" itemprop="url" rel="index">
-                    <span itemprop="name">database</span>
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
                   </a>
                 </span>
 
@@ -341,40 +341,225 @@
       
 
       
-        <h3 id="Mybatis缓存机制"><a href="#Mybatis缓存机制" class="headerlink" title="Mybatis缓存机制"></a>Mybatis缓存机制</h3><p>mybatis提供了缓存机制减轻数据库压力，提高数据库性能<br>mybatis的缓存分为两级：一级缓存、二级缓存<br>一级缓存是SqlSession级别的缓存，缓存的数据只在SqlSession内有效<br>二级缓存是mapper级别的缓存，同一个namespace公用这一个缓存，所以对SqlSession是共享的  </p>
-<h4 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h4><p>mybatis的一级缓存是SqlSession级别的缓存，在操作数据库的时候需要先创建SqlSession会话对象，在对象中有一个HashMap用于存储缓存数据，此HashMap是当前会话对象私有的，别的SqlSession会话对象无法访问。<br>当一个sqlSession结束后该sqlSession中的一级缓存也就不存在了。(PerpetualCache) </p>
-<ul>
-<li>具体流程：</li>
-</ul>
-<ol>
-<li>第一次执行select完毕会将查到的数据写入SqlSession内的HashMap中缓存起来</li>
-<li>第二次执行select会从缓存中查数据，如果select相同切传参数一样，那么就能从缓存中返回数据，不用去数据库了，从而提高了效率</li>
-</ol>
-<ul>
-<li>注意：</li>
-</ul>
-<ol>
-<li>如果SqlSession执行了DML操作（insert、update、delete），并commit了，那么mybatis就会清空当前SqlSession缓存中的所有缓存数据，这样可以保证缓存中的存的数据永远和数据库中一致，避免出现脏读</li>
-<li>当一个SqlSession结束后那么他里面的一级缓存也就不存在了，mybatis默认是开启一级缓存，不需要配置</li>
-<li>mybatis的缓存是基于[namespace:sql语句:参数]来进行缓存的，意思就是，SqlSession的HashMap存储缓存数据时，是使用[namespace:sql:参数]作为key，查询返回的语句作为value保存的。例如：-1242243203:1146242777:winclpt.bean.userMapper.getUser:0:2147483647:select * from user where id=?:19</li>
-</ol>
-<h4 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h4><p>二级缓存是mapper级别的缓存，也就是同一个namespace的mappe.xml，当多个SqlSession使用同一个Mapper操作数据库的时候，得到的数据会缓存在同一个二级缓存区域<br>二级缓存它有数据的多session共享机制，但是呢，会导致user在两个命名空间下的数据不一致。<br>二级缓存默认是没有开启的。需要在setting全局参数中配置开启二级缓存。</p>
-<ol>
-<li>conf.xml：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;settings&gt;</span><br><span class="line">        &lt;setting name&#x3D;&quot;cacheEnabled&quot; value&#x3D;&quot;true&quot;&#x2F;&gt;默认是false：关闭二级缓存</span><br><span class="line">&lt;settings&gt;</span><br></pre></td></tr></table></figure></li>
-<li>mapper.xml<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;cache eviction&#x3D;&quot;LRU&quot; flushInterval&#x3D;&quot;60000&quot; size&#x3D;&quot;512&quot; readOnly&#x3D;&quot;true&quot;&#x2F;&gt;当前mapper下所有语句开启二级缓存</span><br></pre></td></tr></table></figure>
-这里配置了一个LRU缓存，并每隔60秒刷新，最大存储512个对象，而却返回的对象是只读的<br>若想禁用当前select语句的二级缓存，添加useCache=”false”修改如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id&#x3D;&quot;getCountByName&quot; parameterType&#x3D;&quot;java.util.Map&quot; resultType&#x3D;&quot;INTEGER&quot; statementType&#x3D;&quot;CALLABLE&quot; useCache&#x3D;&quot;false&quot;&gt;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>具体流程：  </li>
-</ul>
-<ol>
-<li>当一个sqlseesion执行了一次select后，在关闭此session的时候，会将查询结果缓存到二级缓存  </li>
-<li>当另一个sqlsession执行select时，首先会在他自己的一级缓存中找，如果没找到，就回去二级缓存中找，找到了就返回，就不用去数据库了，从而减少了数据库压力提高了性能  </li>
-</ol>
-<blockquote>
-<p>学习：<a href="https://www.cnblogs.com/winclpt/articles/7511672.html" target="_blank" rel="noopener">https://www.cnblogs.com/winclpt/articles/7511672.html</a></p>
-</blockquote>
+        <h4 id="官方文档：http-grpc-mydoc-io"><a href="#官方文档：http-grpc-mydoc-io" class="headerlink" title="官方文档：http://grpc.mydoc.io/"></a>官方文档：<a href="http://grpc.mydoc.io/" target="_blank" rel="noopener">http://grpc.mydoc.io/</a></h4><h3 id="proto文件："><a href="#proto文件：" class="headerlink" title="proto文件："></a>proto文件：</h3><pre>
+syntax = "proto3";
 
+//以外部类模式生成
+option java_multiple_files = true;
+//所在包名
+option java_package = "cn.dxh.practice";
+//最外层类名称
+option java_outer_classname = "PracticeService";
+
+// 定义服务
+service UserService {
+    //按id查询数据
+    rpc FindById (FindByIdRequest) returns (FindByIdResponse) {
+    }
+
+    //服务器端流式 RPC
+    //    客户端发送一个请求给服务端，可获取一个数据流用来读取一系列消息。客户端从返回的数据流里一直读取直到没有更多消息为止。
+    //    通过在 响应 类型前插入 stream 关键字，可以指定一个服务器端的流方法。
+    //查询所有符合条件的数据
+    rpc FindByAge (FindByAgeRequest) returns (stream UserEntity) {
+    }
+
+    //客户端流式 RPC
+    //    即客户端用提供的一个数据流写入并发送一系列消息给服务端。
+    //    客户端写入一个消息序列并将其发送到服务器，同样也是使用流。一旦客户端完成消息写入，就等待服务端读取这些消息并返回应答。
+    //    通过在 请求 类型前指定 stream 关键字来指定一个客户端的流方法。
+    //删除数据
+    rpc DeleteById (DeletedByIdRequest) returns (DeletedByIdResponse) {
+    }
+
+    //双向流式 RPC
+    //    即两边都可以分别通过一个读写数据流来发送一系列消息。这两个数据流操作是相互独立的，所以客户端和服务端能按其希望的任意顺序读写，
+    //    例如：服务端可以在写应答前等待所有的客户端消息，或者它可以先读一个消息再写一个消息，或者是读写相结合的其他方式。每个数据流里消息的顺序会被保持。
+    //通过在请求和响应前加 stream 关键字去制定方法的类型。
+    rpc FindByName (stream FindByNameRequest) returns (stream UserEntity) {
+    }
+}
+
+//按id查询数据参数
+message FindByIdRequest {
+    int64 id = 1;
+}
+//按id查询数据返回结果
+message FindByIdResponse {
+    string name = 2;
+    int32 age = 3;
+}
+//查询语句的条件参数
+message FindByAgeRequest {
+    int32 age = 1;
+}
+
+//删除数据的参数
+message DeletedByIdRequest {
+    int64 id = 1;
+}
+
+//删除数据的返回结果
+message DeletedByIdResponse {
+}
+
+//参数
+message FindByNameRequest {
+}
+
+//实例
+message UserEntity {
+    int64 id = 1;
+    string name = 2;
+    int32 age = 3;
+    string from = 4;
+    string pwd = 5;
+}
+
+</pre>
+
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><h4 id="编写serviceImpl类"><a href="#编写serviceImpl类" class="headerlink" title="编写serviceImpl类"></a>编写serviceImpl类</h4><p> 此类需要继承 UserServiceGrpc.UserServiceImplBase ,这个类提供了我们定义的接口，继承后并覆盖需要实现的方法。</p>
+<pre>
+@Slf4j
+@Service
+public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
+
+  @Resource
+  private UserMapper userMapper;
+
+  /**
+   * 简单rpc
+   * 其中StreamObserver<UserEntity>是一个应答观察者,用于封装返回的信息,服务器把该信息传给客户端.请求结束要调用onCompleted()方法.
+   * @param request
+   * @param responseObserver
+   */
+  @Override
+  public void findById(FindByIdRequest request, StreamObserver<UserEntity> responseObserver) {
+    try {
+      long id = request.getId();
+      userMapper.findById(id)
+      responseObserver.onNext(UserEntity.newBuilder().build());
+//      请求结束
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      log.error("findById is error");
+    }
+  }
+
+  /**
+   * 服务器端流式 RPC
+   *
+   * @param request
+   * @param responseObserver
+   */
+  @Override
+  public void findByAge(FindByAgeRequest request, StreamObserver<UserEntity> responseObserver) {
+    try {
+      int age = request.getAge();
+      List<UserEntity> userEntities = userMapper.findByAgs(age);
+      userEntities.forEach(userEntity -> responseObserver.onNext(UserEntity.newBuilder().build()));
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      log.error("");
+    }
+  }
+
+
+  /**
+   * 客户端流式 RPC
+   * 服务端就需要一直监控客户端写入情况,因此需要一个StreamObserver接口,其中onNext方法会在客户端每次写入时调用,当写入完毕时调用onCompleted()方法
+   * @param responseObserver
+   * @return
+   */
+  @Override
+  public StreamObserver<DeletedByIdRequest> deleteById(StreamObserver<DeletedByIdResponse> responseObserver) {
+    return new StreamObserver<DeletedByIdRequest>() {
+      @Override
+      public void onNext(DeletedByIdRequest deletedByIdRequest) {
+        userMapper.deletedById(deletedByIdRequest.getId());
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onNext(DeletedByIdResponse.newBuilder().build());
+        responseObserver.onCompleted();
+      }
+    };
+  }
+
+  /**
+   * 双向流式 RPC
+   *
+   * @param responseObserver
+   * @return
+   */
+  @Override
+  public StreamObserver<FindByNameRequest> findByName(StreamObserver<UserEntity> responseObserver) {
+    return new StreamObserver<FindByNameRequest>() {
+      @Override
+      public void onNext(FindByNameRequest findByNameRequest) {
+        userMapper.findByName(findByNameRequest.getName());
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onNext(UserEntity.newBuilder().build());
+        responseObserver.onCompleted();
+      }
+    };
+  }
+}
+</pre>
+
+<h4 id="创建服务端"><a href="#创建服务端" class="headerlink" title="创建服务端"></a>创建服务端</h4><pre>
+@Component
+public class GrpcService {
+
+  private int port = 19090;
+  private Server server;
+
+  @Resource
+  private UserServiceGrpc.UserServiceImplBase userService;
+
+  @PostConstruct
+  public void init() throws IOException {
+    ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true)
+                                                            .setNameFormat("grpc-server-thread-%d")
+                                                            .build();
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(10,
+                                                         100,
+                                                         60L,
+                                                         TimeUnit.SECONDS,
+                                                         new LinkedBlockingQueue<>(),
+                                                         threadFactory,
+                                                         new ThreadPoolExecutor.CallerRunsPolicy());
+    server = ServerBuilder.forPort(port)
+                          .addService(userService)
+                          .executor(executor).build();
+    server.start();
+  }
+
+  @PreDestroy
+  public void destroy() {
+    if (server != null) {
+      server.shutdown();
+    }
+  }
+
+}
+</pre>
+
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3>
       
     </div>
     
@@ -391,7 +576,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+            <a href="/tags/rpc-grpc/" rel="tag"># rpc grpc</a>
           
         </div>
       
@@ -404,8 +589,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/31/http/time_wait/" rel="next" title="TIME_WAIT状态分析">
-                <i class="fa fa-chevron-left"></i> TIME_WAIT状态分析
+              <a href="/2018/12/21/database/postgresql/" rel="next" title="PostgreSql">
+                <i class="fa fa-chevron-left"></i> PostgreSql
               </a>
             
           </div>
@@ -414,8 +599,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/26/java/hash_map/" rel="prev" title="HashMap原理">
-                HashMap原理 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/07/19/database/redis/" rel="prev" title="Redis">
+                Redis <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -548,7 +733,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mybatis缓存机制"><span class="nav-number">1.</span> <span class="nav-text">Mybatis缓存机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一级缓存"><span class="nav-number">1.1.</span> <span class="nav-text">一级缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二级缓存"><span class="nav-number">1.2.</span> <span class="nav-text">二级缓存</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#官方文档：http-grpc-mydoc-io"><span class="nav-number">1.</span> <span class="nav-text">官方文档：http:&#x2F;&#x2F;grpc.mydoc.io&#x2F;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proto文件："><span class="nav-number"></span> <span class="nav-text">proto文件：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端"><span class="nav-number"></span> <span class="nav-text">服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编写serviceImpl类"><span class="nav-number">1.</span> <span class="nav-text">编写serviceImpl类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建服务端"><span class="nav-number">2.</span> <span class="nav-text">创建服务端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端"><span class="nav-number"></span> <span class="nav-text">客户端</span></a></div>
             
 
           </div>
