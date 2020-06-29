@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="aop annotation," />
+  <meta name="keywords" content="xiaohua,Dong" />
 
 
 
@@ -79,16 +79,11 @@
 
 
 
-<meta name="description" content="注解 AnnotationAnnotation其实是代码里的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相应的处理。通过使用Annotation，程序开发人员可以在不改变原有逻辑的情况下，在源文件嵌入一些补充信息。代码分析工具、开发工具和部署工具可以通过这些补充信息进行验证或者进行部署。 　　Annotation提供了一条为程序元素设置元数据的方法，从某些方面来看，Annotatio">
-<meta property="og:type" content="article">
-<meta property="og:title" content="AOP(审计日志的开发与延伸)">
-<meta property="og:url" content="http://yoursite.com/2018/12/11/java/aop_audit_log_java/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="隔壁董小花同学">
+<meta property="og:url" content="http://yoursite.com/page/2/index.html">
 <meta property="og:site_name" content="隔壁董小花同学">
-<meta property="og:description" content="注解 AnnotationAnnotation其实是代码里的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相应的处理。通过使用Annotation，程序开发人员可以在不改变原有逻辑的情况下，在源文件嵌入一些补充信息。代码分析工具、开发工具和部署工具可以通过这些补充信息进行验证或者进行部署。 　　Annotation提供了一条为程序元素设置元数据的方法，从某些方面来看，Annotatio">
-<meta property="article:published_time" content="2018-12-11T11:27:42.626Z">
-<meta property="article:modified_time" content="2020-01-02T08:25:16.657Z">
 <meta property="article:author" content="xiaohua Dong">
-<meta property="article:tag" content="aop annotation">
 <meta name="twitter:card" content="summary">
 
 
@@ -119,13 +114,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/11/java/aop_audit_log_java/"/>
+  <link rel="canonical" href="http://yoursite.com/page/2/"/>
 
 
 
 
 
-  <title>AOP(审计日志的开发与延伸) | 隔壁董小花同学</title>
+  <title>隔壁董小花同学</title>
   
 
 
@@ -144,7 +139,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -237,9 +233,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -269,7 +265,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">AOP(审计日志的开发与延伸)</h1>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/11/java/aop_audit_log_java/" itemprop="url">AOP(审计日志的开发与延伸)</a></h1>
         
 
         <div class="post-meta">
@@ -341,7 +339,9 @@
       
 
       
-        <h3 id="注解-Annotation"><a href="#注解-Annotation" class="headerlink" title="注解 Annotation"></a>注解 Annotation</h3><p>Annotation其实是代码里的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相应的处理。通过使用Annotation，程序开发人员可以在不改变原有逻辑的情况下，在源文件嵌入一些补充信息。代码分析工具、开发工具和部署工具可以通过这些补充信息进行验证或者进行部署。<br></p>
+        
+          
+            <h3 id="注解-Annotation"><a href="#注解-Annotation" class="headerlink" title="注解 Annotation"></a>注解 Annotation</h3><p>Annotation其实是代码里的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相应的处理。通过使用Annotation，程序开发人员可以在不改变原有逻辑的情况下，在源文件嵌入一些补充信息。代码分析工具、开发工具和部署工具可以通过这些补充信息进行验证或者进行部署。<br></p>
 <p>　　Annotation提供了一条为程序元素设置元数据的方法，从某些方面来看，Annotation就像修饰符一样被使用，可用于修饰包、类、构造器、方法、成员变量、参数、局部变量的声明，这些信息被存储在Annotation的“name=value”对中。<br></p>
 <p>　　Annotation能被用来为程序元素(类、方法、成员变量等)设置元数据。值得指出的是：Annotation不能影响程序代码的执行，无论增加、删除Annotation，代码都始终如一地执行。如果希望让程序中的Annotation能在运行时起一定的作用，只有通过某种配套的工具对Annotation中的信息进行访问的处理，访问和处理Annotation的工具统称APT（Annotation Processing Tool） <br><br><br>Annotation必须使用工具来处理，工具负责提取Annotation里包含的元数据，工具还会根据这些元数据增加额外的功能。<br><br>三个基本的Annotation：<br><br>@Override         限定重写父类的方法<br><br>@Deprecated     标示已过时<br><br>@SuppressWarnings     抑制编译器警告<br></p>
 <p><b>自定义Annotation</b><br>定义新的Annotation类型使用@interface关键字，它用于定义新的Annotation类型。定义一个新的Annotation类型与定义一个接口非常像<br><br>定义一个简单的注解：</p>
@@ -406,6 +406,8 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
 
 ### 动态代理
 
+          
+        
       
     </div>
     
@@ -420,40 +422,14 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/aop-annotation/" rel="tag"># aop annotation</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/07/20/java/cron_java/" rel="next" title="cron基础用法">
-                <i class="fa fa-chevron-left"></i> cron基础用法
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/21/database/postgresql/" rel="prev" title="PostgreSql">
-                PostgreSql <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -463,11 +439,157 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
   </article>
 
 
+    
+      
 
-    <div class="post-spread">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/java/cron_java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/20/java/cron_java/" itemprop="url">cron基础用法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T19:01:08+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在线Cron表达式生成器 : <a href="http://cron.qqe2.com/" target="_blank" rel="noopener">http://cron.qqe2.com/</a></p>
+<p>（1）<span style="color:red">*</span>：表示匹配该域的任意值。假如在Minutes域使用<em>, 即表示每分钟都会触发事件。<br>（2）<span style="color:red">?</span>：只能用在DayofMonth和DayofWeek两个域。它也匹配域的任意值，但实际不会。因为DayofMonth和DayofWeek会相互影响。例如想在每月的20日触发调度，不管20日到底是星期几，则只能使用如下写法： 13 13 15 20 * ?, 其中最后一位只能用？，而不能使用</em>，如果使用*表示不管星期几都会触发，实际上并不是这样。<br>（3）<span style="color:red">-</span>：表示范围。例如在Minutes域使用5-20，表示从5分到20分钟每分钟触发一次<br>（4）<span style="color:red">/</span>：表示起始时间开始触发，然后每隔固定时间触发一次。例如在Minutes域使用5/20,则意味着5分钟触发一次，而25，45等分别触发一次.<br>（5）<span style="color:red">,</span>：表示列出枚举值。例如：在Minutes域使用5,20，则意味着在5和20分每分钟触发一次。<br>（6）<span style="color:red">L</span>：表示最后，只能出现在DayofWeek和DayofMonth域。如果在DayofWeek域使用5L,意味着在最后的一个星期四触发。<br>（7）<span style="color:red">W</span>:表示有效工作日(周一到周五),只能出现在DayofMonth域，系统将在离指定日期的最近的有效工作日触发事件。例如：在 DayofMonth使用5W，如果5日是星期六，则将在最近的工作日：星期五，即4日触发。如果5日是星期天，则在6日(周一)触发；如果5日在星期一到星期五中的一天，则就在5日触发。另外一点，W的最近寻找不会跨过月份 。<br>（8）<span style="color:red">LW</span>:这两个字符可以连用，表示在某个月最后一个工作日，即最后一个星期五。<br>（9）<span style="color:red">#</span> :用于确定每个月第几个星期几，只能出现在DayofMonth域。例如在4#2，表示某月的第二个星期三。</p>
+
+          
+        
       
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
@@ -475,10 +597,6 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
 
 
           
-
-  
-
-
 
         </div>
         
@@ -499,17 +617,8 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -569,22 +678,6 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#注解-Annotation"><span class="nav-number">1.</span> <span class="nav-text">注解 Annotation</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -718,10 +811,6 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 
