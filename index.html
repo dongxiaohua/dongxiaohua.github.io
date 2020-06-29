@@ -1343,6 +1343,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/22/basics/maven_version/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/22/basics/maven_version/" itemprop="url">maven版本区分</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-22T10:20:00+08:00">
+                2019-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/basics/" itemprop="url" rel="index">
+                    <span itemprop="name">basics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="maven的快照版本和发布版本"><a href="#maven的快照版本和发布版本" class="headerlink" title="maven的快照版本和发布版本"></a>maven的快照版本和发布版本</h3><p>在使用maven过程中，我们在开发阶段经常性的会有很多公共库处于不稳定状态，随时需要修改并发布，可能一天就要发布一次，遇到bug时，甚至一天要发布N次。我们知道，maven的依赖管理是基于版本管理的，对于发布状态的artifact，如果版本号相同，即使我们内部的镜像服务器上的组件比本地新，maven也不会主动下载的。如果我们在开发阶段都是基于正式发布版本来做依赖管理，那么遇到这个问题，就需要升级组件的版本号，可这样就明显不符合要求和实际情况了。但是，如果是基于快照版本，那么问题就自热而然的解决了，而maven已经为我们准备好了这一切。<br>      maven中的仓库分为两种，snapshot快照仓库和release发布仓库。snapshot快照仓库用于保存开发过程中的不稳定版本，release正式仓库则是用来保存稳定的发行版本。定义一个组件/模块为快照版本，只需要在pom文件中在该模块的版本号后加上-SNAPSHOT即可(注意这里必须是大写)，如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;groupId&gt;cc.mzone&lt;&#x2F;groupId&gt;</span><br><span class="line">&lt;artifactId&gt;m1&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;version&gt;0.1-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">&lt;packaging&gt;jar&lt;&#x2F;packaging&gt;</span><br></pre></td></tr></table></figure>
+<p>maven2会根据模块的版本号(pom文件中的version)中是否带有-SNAPSHOT来判断是快照版本还是正式版本。如果是快照版本，那么在mvn deploy时会自动发布到快照版本库中，会覆盖老的快照版本，而在使用快照版本的模块，在不更改版本号的情况下，直接编译打包时，maven会自动从镜像服务器上下载最新的快照版本。如果是正式发布版本，那么在mvn deploy时会自动发布到正式版本库中，而使用正式版本的模块，在不更改版本号的情况下，编译打包时如果本地已经存在该版本的模块则不会主动去镜像服务器上下载。<br>所以，我们在开发阶段，可以将公用库的版本设置为快照版本，而被依赖组件则引用快照版本进行开发，在公用库的快照版本更新后，我们也不需要修改pom文件提示版本号来下载新的版本，直接mvn执行相关编译、打包命令即可重新下载最新的快照库了，从而也方便了我们进行开发。<br>目前在JAVA的世界中，maven已经成为事实上的构建标准，很多开源库的管理构建也是基于maven的，maven本身的学习曲线比较陡峭，遵循“约定优于配置”的理念，maven存在很多约定。本次我先描述下，关于版本的定义的选择，SNAPSHOT or RELEASE？  </p>
+<ul>
+<li>版本之争<br>在maven的约定中，依赖的版本分为两类——SNAPSHOT和RELEASE。SNAPSHOT依赖泛指以-SNAPSHOT为结尾的版本号，例如1.0.1-SNAPSHOT。除此之外，所有非-SNAPSHOT结尾的版本号则都被认定为RELEASE版本，即正式版，虽然会有beta、rc之类说法，但是这些只是软件工程角度的测试版，对于maven而言，这些都是RELEASE版本。既然Maven提供了这两类版本号，那么他们之前的优劣势是什么？分别在什么场景下使用？  </li>
+<li>解读SNAPSHOT<br>同一个SNAPSHOT版本的依赖可以多次发布（deploy）到仓库中，也就是说同一个SNAPSHOT版本的依赖可以在仓库中存在多份，每一份都是代码在某一个特定时间的快照，这也是SNAPSHOT的含义。  </li>
+<li>snapshot<br>如上图，很好地表达了SNAPSHOT的细节，也阐述了一个SNAPSHOT很重要观点——SNAPSHOT不是一个特定的版本，而是一系列的版本的集合，其中HEAD总是指向最新的快照，对外界可见的一般也是最新版，这种给人的假象是新的覆盖了老的，从而使得使用SNAPSHOT依赖的客户端总是通过重新构建（有时候需要-U强制更新）就可以拿到最新的代码。例如：A–&gt;B-1.3.8-SNAPSHOT（理解为A依赖了B的1.3.8-SNAPSHOT版本），那么B-1.3.8-SNAPSHOT更新之后重新deploy到仓库之后，A只需要重新构建就可以拿到最新的代码，并不需要改变依赖B的版本。由此可见，这样达到了变更传达的透明性，这对于开发过程中的团队协作的帮助不言而喻。  </li>
+<li>SNAPSHOT之殇<br>SNAPSHOT版本的依赖因为存在变更传达的透明性的优势而被赏识，甚至被“溺爱”，有很多团队索性直接使用SNAPSHOT到生产环境中，这样对于变更直接生效，很方便。但是作为技术人员的我们其实应该很严谨地看待变更传达的透明性，变更就意味着风险，透明性更是把风险彻底隐藏了起来，生产环境中存在这样的现象更是心惊胆战。例如：A–&gt;B.1.0.3-SNAPSHOT，B对一个A使用的功能实现进行了调整，直接发布到仓库，A重新构建或许就会失败，更糟糕的是构建成功，运行时异常。这个时候A甚至完全没有代码变更就突然失败了，会带来更多的困惑。<br>这也是maven经常遭人诟病的一个因素，对于同一份代码，构建结果却不具备确定性，让很多人沮丧。当然这个不完全是因为依赖的问题，也有maven插件的问题，maven之前的版本寻找插件策略的方式也存在不确定性，maven在版本2的时候，会去寻找最新的插件版本（如果没配置的话）来执行构建，经常会找到SNAPSHOT版本的插件，所以依赖了一个不稳定的插件来执行构建，不确定性就大大增加。不过maven在3版本就改变了这个策略，会寻找最新稳定版的插件来执行构建，使得构建具备了确定性，稳定性也好多了。说明maven本身也在SNAPSHOT的问题上狠狠摔了一跤。<br>归根到底，这些问题的根源就是SNAPSHOT是变化的，是不稳定的，而应用（软件）依赖于变化并且不稳定的SNAPSHOT的依赖会导致自身也在变化和不稳定中，这是稳定性的一个大忌，依赖不稳定的服务或者依赖，上述的maven2的问题就是一个典型反例。  </li>
+<li>RELEASE简介<br>RELEASE版本和SNAPSHOT是相对的，非SANPSHOT版本即RELEASE版本，RELEASE版本是一个稳定的版本号，看清楚咯，是一个，不是一系列，可以认为RELEASE版本是不可变化的，一旦发布，即永远不会变化。<br>虽然RELEASE版本是稳定不变的，但是仓库还是有策略让这个原则变得可配置，有的仓库会配置成redeploy覆盖，这样RELEASE版本就变成SNAPSHOT了，伪装成RELEASE的SNAPSHOT，会让问题更费解和棘手。<br>记住，RELEASE一旦发布，就不可改变。  </li>
+<li>如何选择<br>那么什么时候使用SNAPSHOT？什么时候使用RELEASE?这个可以从他们各自的特性上来看，SNAPSHOT版本的库是一直在变化的，或者说随时都会变化的，这样虽然可以获取到最新的特性，但是也存在不稳定因素，依赖一个不稳定的模块或者库会让模块自身也变得不稳定，尤其是自身对被依赖模块的变化超出掌控的情况。即使可以掌控被依赖模块的变化，也会带来不稳定的因素，因为每次变更都有引入bug的可能性。如果这么说，那么我们是不是要摒弃SANPSHOT了呢？答案肯定是否定的。<br>想象下，什么情况下，模块会一直变化或者变化比较剧烈？开发新特性的时候，所以对于团队之间协同开发的时候，模块之间出现依赖，变化会非常剧烈，如模块A依赖模块B，模块A必然需要最方便地获取模块B的特性，在开发期间，方便性比稳定性更重要。可以反证下，假设模块B使用RELEASE版本1.0.0，模块A依赖1.0.0，现在模块A出现了bug，需要修复下，那么A就要提供一个版本号1.0.1，这样所有依赖A模块都需要更新版本号，因为开发期间这种事情是如此多，所以会带来巨变。反观SNAPSHOT方案，如果模块B的版本是1.0.0-SNAPSHOT，模块A完全不需要修改版本号即可获取模块B的新特性。当开发进入预发布阶段，为了生产环境的稳定性，依赖应该是RELEASE版本，因为此时SNAPSHOT版本的模块自动获取新特性的特点恰恰会造成生产环境的不稳定性，生产环境上，稳定性重于一切。  </li>
+<li>魔幻之手<br>现在已经很明确了，在开发期间，活跃模块的版本号使用SNAPSHOT，在生产期间，依赖RELEASE版本模块。貌似，我们找到了银弹，不过这个只是理想状态，即所有的模块的版本都在自己的掌控或者间接掌控下，只有这样你才能影响对应模块的版本号。往往是理想很丰满，现实却很骨感，如果你依赖的一个模块只有SNAPSHOT版本，并且该模块也很活跃，最无助的是模块的维护人不理会你的请求，那么是否就没辙了，只能把应用构建在不稳定模块上呢？介绍一款maven插件——versions，这是一个非常强大的版本管理插件，其中有个对依赖版本加锁的特性——lock-snapshots，并且提供了参数可以控制锁定的依赖，就可以实现对特定的SNAPSHOT模块锁定版本，执行的命令如下：mvn versions:lock-snapshots -DincludesList=”groupId:artifactId:type:classifier:version”，执行这个命令之后，对应的版本号会变化，比如1.0.0-SNAPSHOT会变成1.0.0.20090327.172306-4，即完成了锁定，此时这个SNAPSHOT就变成了固定小版本的稳定版本，不会在变化了，也相当于正式版的功能了。当然以后也可以解锁，详细请看对应文档。  </li>
+</ul>
+<blockquote>
+<p>摘自： <a href="https://www.cnblogs.com/wuchanming/p/5484091.html" target="_blank" rel="noopener">https://www.cnblogs.com/wuchanming/p/5484091.html</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/19/database/redis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1851,295 +2007,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/17/spring/spring_transaction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaohua Dong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="隔壁董小花同学">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/17/spring/spring_transaction/" itemprop="url">Spring事务处理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-17T09:45:41+08:00">
-                2019-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="什么是Spring事务"><a href="#什么是Spring事务" class="headerlink" title="什么是Spring事务"></a>什么是Spring事务</h3><pre>
-事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。
-数据库向用户提供保存当前程序状态的方法，叫事务提交（commit）；当事务执行过程中，使数据库忽略当前的状态并回到前面保存的状态的方法叫事务回滚（rollback）
-</pre>
-
-<h3 id="事务特性（ACID）"><a href="#事务特性（ACID）" class="headerlink" title="事务特性（ACID）"></a>事务特性（ACID）</h3><p><strong>原子性（atomicity）：</strong> 将事务中所做的操作捆绑成一个原子单元，即对于事务所进行的数据修改等操作，要么全部执行，要么全部不执行。<br><strong>一致性（Consistency)：</strong> 事务在完成时，必须使所有的数据都保持一致状态，而且在相关数据中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构都应该是正确的。<br><strong>隔离性（Isolation）：</strong> 由并发事务所做的修改必须与任何其他事务所做的修改相隔离。事务查看数据时数据所处的状态，要么是被另一并发事务修改之前的状态，要么是被另一并发事务修改之后的状态，即事务不会查看由另一个并发事务正在修改的数据。这种隔离方式也叫可串行性。<br><strong>持久性（Durability）：</strong> 事务完成之后，它对系统的影响是永久的，即使出现系统故障也是如此。  </p>
-<h3 id="事务隔离（Isolation-Level）"><a href="#事务隔离（Isolation-Level）" class="headerlink" title="事务隔离（Isolation Level）"></a>事务隔离（Isolation Level）</h3><p>事务隔离意味着对于某个运行着的事务来说，类似于系统中只有一个事物，其他并发事务都不存在一样<br>大部分情况下很少使用安全隔离的事务，但是不完全隔离的事务会带来如下问题：<br><strong>更新丢失（Lost Update）：</strong> 两个事务都企图去更新一行数据，导致事务抛出异常退出。<br><strong>脏数据（Dirty Read）：</strong> 如果第二个应用程序使用了第一个应用程序修改过的数据，而这个数据处于未提交状态，这时就会发生脏读。第一个应用程序随后可能会请求回滚被修改的数据，从而导致第二个事务使用的数据被损坏，即所谓的“变脏”。<br><strong>不可重读（Unrepeatable Read）：</strong> 一个事务两次读同一行数据，可是这两次读到的数据不一样，就叫不可重读。如果一个事务在提交数据之前，另一个事务可以修改和删除这些数据，就会发生不可重读。<br><strong>幻读（Phantom Read）：</strong> 一个事务执行了两次查询，发现第二次查询结果比第一次查询多出了一行，这可能是因为另一个事务在这两次查询之间插入了新行。  </p>
-<h4 id="那么为了避免此类问题，提供出了以下隔离级别来防范"><a href="#那么为了避免此类问题，提供出了以下隔离级别来防范" class="headerlink" title="那么为了避免此类问题，提供出了以下隔离级别来防范:"></a>那么为了避免此类问题，提供出了以下隔离级别来防范:</h4><p><strong>读操作未提交（Read Uncommitted）：</strong> 读取未提交的数据是允许的。说明一个事务在提交前，其变化对于其他事务来说是可见的。这样脏读、不可重读和幻读都是允许的。当一个事务已经写入一行数据但未提交，其他事务都不能再写入此行数据；但是，任何事务都可以读任何数据。这个隔离级别使用排写锁实现。<br><strong>读操作已提交（Read Committed）：</strong> 读取未提交的数据是不允许的，它使用临时的共读锁和排写锁实现。这种隔离级别不允许脏读，但不可重读和幻读是允许的。<br><strong>可重读（Repeatable Read）：</strong> 说明事务保证能够再次读取相同的数据而不会失败。此隔离级别不允许脏读和不可重读，但幻读会出现。<br><strong>可串行化（Serializable）：</strong> 提供最严格的事务隔离。这个隔离级别不允许事务并行执行，只允许串行执行。这样，脏读、不可重读或幻读都可发生。  </p>
-<h3 id="事务隔离与隔离级别的关系："><a href="#事务隔离与隔离级别的关系：" class="headerlink" title="事务隔离与隔离级别的关系："></a>事务隔离与隔离级别的关系：</h3><table>
-<thead>
-<tr>
-<th align="left">隔离级别</th>
-<th align="left">脏读（Dirty Read）</th>
-<th align="left">不可重读（Unrepeatable read）</th>
-<th align="left">幻读（Phantom Read）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">读操作未提交（Read Uncommitted）</td>
-<td align="left">可能</td>
-<td align="left">可能</td>
-<td align="left">可能</td>
-</tr>
-<tr>
-<td align="left">读操作已提交（Read Committed）</td>
-<td align="left">不可能</td>
-<td align="left">可能</td>
-<td align="left">可能</td>
-</tr>
-<tr>
-<td align="left">可重读（Repeatable Read）</td>
-<td align="left">不可能</td>
-<td align="left">不可能</td>
-<td align="left">可能</td>
-</tr>
-<tr>
-<td align="left">可串行化（Serializable）</td>
-<td align="left">不可能</td>
-<td align="left">不可能</td>
-<td align="left">不可能</td>
-</tr>
-<tr>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-</tbody></table>
-<h3 id="事务的传播（Propagation）"><a href="#事务的传播（Propagation）" class="headerlink" title="事务的传播（Propagation）"></a>事务的传播（Propagation）</h3><table>
-<thead>
-<tr>
-<th align="left">事务传播行为类型</th>
-<th align="left">说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">PROPAGATION_REQUIRED</td>
-<td align="left">如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是 最常见的选择。</td>
-</tr>
-<tr>
-<td align="left">PROPAGATION_SUPPORTS</td>
-<td align="left">支持当前事务，如果当前没有事务，就以非事务方式执行。</td>
-</tr>
-<tr>
-<td align="left">PROPAGATION_MANDATORY</td>
-<td align="left">使用当前的事务，如果当前没有事务，就抛出异常。</td>
-</tr>
-<tr>
-<td align="left">PROPAGATION_REQUIRES_NEW</td>
-<td align="left">新建事务，如果当前存在事务，把当前事务挂起。</td>
-</tr>
-<tr>
-<td align="left">PROPAGATION_NOT_SUPPORTED</td>
-<td align="left">以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</td>
-</tr>
-<tr>
-<td align="left">PROPAGATION_NEVER</td>
-<td align="left">以非事务方式执行，如果当前存在事务，则抛出异常。</td>
-</tr>
-<tr>
-<td align="left">PROPAGATION_NESTED</td>
-<td align="left">如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与 PROPAGATION_REQUIRED 类似的操作。</td>
-</tr>
-<tr>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-</tbody></table>
-<p><strong>readOnly</strong> 事务属性中的readOnly标志表示对应的事务应该被最优化为只读事务。这是一个最优化提示 。在一些情况下，一些事务策略能够起到显著的最优化效果，例如在使用Object/Relational映射工具 （如：Hibernate或TopLink）时避免dirty checking（试图“刷新”）。<br><strong>Timeout</strong> 在事务属性中还有定义“timeout”值的选项，指定事务超时为几秒。在JTA中，这将被简单地传递到J2EE服务器的事务协调程序，并据此得到相应的解释。  </p>
-<h3 id="事务的嵌套"><a href="#事务的嵌套" class="headerlink" title="事务的嵌套"></a>事务的嵌套</h3><ol>
-<li><strong>PROPAGATION_REQUIRED</strong> 加入当前正要执行的事务不在另外一个事务里，那么就起一个新的事务。即，如果存在主事务，则将此事务合并到主事务中，提交和回滚与主事务依赖，不存在主事务则会自起事务。</li>
-<li><strong>PROPAGATION_SUPPORTS</strong> 如果当前在事务中，即以事务的形式运行，如果当前不再一个事务中，那么就以非事务的形式运行。</li>
-<li><strong>PROPAGATION_MANDATORY</strong> 必须在一个事务中运行。也就是说，他只能被一个父事务调用。否则，他就要抛出异常</li>
-<li><strong>PROPAGATION_REQUIRES_NEW</strong> 在主事务中，创建一个新的事务（子事务）并挂起主事务，执行完子事务后，主事务继续执行，但是，如果子事务已经提交，当主事务失败回滚时，子事务是不回滚的</li>
-<li><strong>PROPAGATION_NOT_SUPPORTED</strong> 当前不支持事务，当存在事务中时，会将主事务挂起，当以非事务状态执行完后在继续执行主事务</li>
-<li><strong>PROPAGATION_NEVER</strong> 不能在事务中运行，否则抛异常。</li>
-<li><strong>PROPAGATION_NESTED</strong> 它与PROPAGATION_REQUIRES_NEW的区别是，不另起事务，与主事务相依，而且需要等主事务提交时才会提交，主事务回滚它也回滚。</li>
-</ol>
-<h3 id="Spring事务处理"><a href="#Spring事务处理" class="headerlink" title="Spring事务处理"></a>Spring事务处理</h3><p> Spring配置文件中关于事务配置总是由三个组成部分，分别是DataSource、TransactionManager和代理机制这三部分，无论哪种配置方式，一般变化的只是代理机制这部分。<br> Spring处理事务主要有五种方法：</p>
-<ol>
-<li>每个bin都有一个代理</li>
-<li>所有bin共享一个代理基类</li>
-<li>使用拦截器</li>
-<li>使用tx标签配置的拦截器</li>
-<li>全注解<br>此处只简单介绍全注解：<br>在配置好数据库配置后，需要 <em>定义事务管理器</em>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id&#x3D;&quot;transactionManager&quot;</span><br><span class="line">        class&#x3D;&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">    &lt;property name&#x3D;&quot;dataSource&quot; ref&#x3D;&quot;datasource&quot;&#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;bean&gt;</span><br></pre></td></tr></table></figure>
-然后在需要事务的方法上添加 @Transactional 注解。  </li>
-</ol>
-<h3 id="Transactional"><a href="#Transactional" class="headerlink" title="@Transactional"></a>@Transactional</h3><h4 id="Transactional的含义"><a href="#Transactional的含义" class="headerlink" title="@Transactional的含义"></a>@Transactional的含义</h4><p>关键点之一是要考虑两个独立的概念，它们都有各自的范围和生命周期：  </p>
-<ul>
-<li>persistence context(持久化上下文)</li>
-<li>database transaction（事务）<br>@Transactional本身定义了单个事务的范围。这个事务在persistence context的范围内。<br>JPA中的持久化上下文是EntityManager，内部实现使用了Hibernate Session（使用Hibernate作为持久化provider）<br>持久化上下文仅仅是一个同步对象，它记录了有限集合的Java对象的状态，并且保证这些对象的变化最终持久化到数据库。<br>这是与单个事务非常不同的概念。一个Entity Manager可以跨越多个事务使用，而且的确是这样使用的。  <h4 id="EntityManager和Transaction之间的关系"><a href="#EntityManager和Transaction之间的关系" class="headerlink" title="EntityManager和Transaction之间的关系:"></a>EntityManager和Transaction之间的关系:</h4>JPA Entity Manager最常用的方式是“Entity Manager per application transaction”(每个事务都有自己的实体管理器)模式。entity manager注入的常用方法是：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@PersistenceContext</span><br><span class="line">private EntityManager em;</span><br></pre></td></tr></table></figure>
-这里默认为“Entity Manager per transaction”模式。这种模式下如果在@Transactional方法内部使用该Entity Manager，那么该方法将在单一事务中运行。  </li>
-</ul>
-<h4 id="PersistenceContext的工作原理"><a href="#PersistenceContext的工作原理" class="headerlink" title="@PersistenceContext的工作原理"></a>@PersistenceContext的工作原理</h4><p>随之而来的问题就是@PersistenceContext如何仅在容器启动时注入entity manager，假定entity manager生命周期很短暂，而且每次请求需要多个entity manager。<br>答案是它不能：EntityManager是一个接口，注入到spring bean中的不是entity manager本身，而是在运行时代理具体entity manager的context aware proxy（上下文感知代理）。<br>通常用于代理的具体类为SharedEntityManagerInvocationHandler，借助调试器可以确认这一点。  </p>
-<h4 id="Transactional如何工作的"><a href="#Transactional如何工作的" class="headerlink" title="@Transactional如何工作的"></a>@Transactional如何工作的</h4><p>实现了EntityManager接口的持久化上下文代理并不是声明式事务管理的唯一部分，事实上包含三个组成部分：</p>
-<ul>
-<li>EntityManager Proxy本身</li>
-<li>事务的切面</li>
-<li>事务管理器  <h5 id="事务的切面："><a href="#事务的切面：" class="headerlink" title="事务的切面："></a>事务的切面：</h5>事务的切面是一个“around（环绕）”切面，在注解的业务方法前后都可以被调用。实现切面的具体类是TransactionInterceptor。<br>事务的切面有两个主要职责：  </li>
-<li>在’before’时，切面提供一个调用点，来决定被调用业务方法应该在正在进行事务的范围内运行，还是开始一个新的独立事务。  </li>
-<li>在’after’时，切面需要确定事务被提交，回滚或者继续运行。  </li>
-<li>在’before’时，事务切面自身不包含任何决策逻辑，是否开始新事务的决策委派给事务管理器完成。</li>
-</ul>
-<h5 id="事务管理器："><a href="#事务管理器：" class="headerlink" title="事务管理器："></a>事务管理器：</h5><p>事务管理器需要解决下面两个问题：    </p>
-<ul>
-<li>新的Entity Manager是否应该被创建？</li>
-<li>是否应该开始新的事务？  </li>
-</ul>
-<p>这些需要事务切面’before’逻辑被调用时决定。事务管理器的决策基于以下两点：  </p>
-<ul>
-<li>事务是否正在进行</li>
-<li>事务方法的propagation属性（比如REQUIRES_NEW总要开始新事务）  </li>
-</ul>
-<p>如果事务管理器确定要创建新事务，那么将：  </p>
-<ul>
-<li>创建一个新的entity manager</li>
-<li>entity manager绑定到当前线程</li>
-<li>从数据库连接池中获取连接</li>
-<li>将连接绑定到当前线程  </li>
-</ul>
-<blockquote>
-<p>摘自：<a href="https://www.cnblogs.com/mxmbk/p/5341258.html" target="_blank" rel="noopener">https://www.cnblogs.com/mxmbk/p/5341258.html</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -2185,7 +2057,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2196,7 +2068,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 
               </div>
@@ -2207,7 +2079,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>

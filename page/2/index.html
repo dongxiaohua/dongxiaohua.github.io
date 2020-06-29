@@ -248,6 +248,290 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/17/spring/spring_transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/17/spring/spring_transaction/" itemprop="url">Spring事务处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-17T09:45:41+08:00">
+                2019-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="什么是Spring事务"><a href="#什么是Spring事务" class="headerlink" title="什么是Spring事务"></a>什么是Spring事务</h3><pre>
+事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。
+数据库向用户提供保存当前程序状态的方法，叫事务提交（commit）；当事务执行过程中，使数据库忽略当前的状态并回到前面保存的状态的方法叫事务回滚（rollback）
+</pre>
+
+<h3 id="事务特性（ACID）"><a href="#事务特性（ACID）" class="headerlink" title="事务特性（ACID）"></a>事务特性（ACID）</h3><p><strong>原子性（atomicity）：</strong> 将事务中所做的操作捆绑成一个原子单元，即对于事务所进行的数据修改等操作，要么全部执行，要么全部不执行。<br><strong>一致性（Consistency)：</strong> 事务在完成时，必须使所有的数据都保持一致状态，而且在相关数据中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构都应该是正确的。<br><strong>隔离性（Isolation）：</strong> 由并发事务所做的修改必须与任何其他事务所做的修改相隔离。事务查看数据时数据所处的状态，要么是被另一并发事务修改之前的状态，要么是被另一并发事务修改之后的状态，即事务不会查看由另一个并发事务正在修改的数据。这种隔离方式也叫可串行性。<br><strong>持久性（Durability）：</strong> 事务完成之后，它对系统的影响是永久的，即使出现系统故障也是如此。  </p>
+<h3 id="事务隔离（Isolation-Level）"><a href="#事务隔离（Isolation-Level）" class="headerlink" title="事务隔离（Isolation Level）"></a>事务隔离（Isolation Level）</h3><p>事务隔离意味着对于某个运行着的事务来说，类似于系统中只有一个事物，其他并发事务都不存在一样<br>大部分情况下很少使用安全隔离的事务，但是不完全隔离的事务会带来如下问题：<br><strong>更新丢失（Lost Update）：</strong> 两个事务都企图去更新一行数据，导致事务抛出异常退出。<br><strong>脏数据（Dirty Read）：</strong> 如果第二个应用程序使用了第一个应用程序修改过的数据，而这个数据处于未提交状态，这时就会发生脏读。第一个应用程序随后可能会请求回滚被修改的数据，从而导致第二个事务使用的数据被损坏，即所谓的“变脏”。<br><strong>不可重读（Unrepeatable Read）：</strong> 一个事务两次读同一行数据，可是这两次读到的数据不一样，就叫不可重读。如果一个事务在提交数据之前，另一个事务可以修改和删除这些数据，就会发生不可重读。<br><strong>幻读（Phantom Read）：</strong> 一个事务执行了两次查询，发现第二次查询结果比第一次查询多出了一行，这可能是因为另一个事务在这两次查询之间插入了新行。  </p>
+<h4 id="那么为了避免此类问题，提供出了以下隔离级别来防范"><a href="#那么为了避免此类问题，提供出了以下隔离级别来防范" class="headerlink" title="那么为了避免此类问题，提供出了以下隔离级别来防范:"></a>那么为了避免此类问题，提供出了以下隔离级别来防范:</h4><p><strong>读操作未提交（Read Uncommitted）：</strong> 读取未提交的数据是允许的。说明一个事务在提交前，其变化对于其他事务来说是可见的。这样脏读、不可重读和幻读都是允许的。当一个事务已经写入一行数据但未提交，其他事务都不能再写入此行数据；但是，任何事务都可以读任何数据。这个隔离级别使用排写锁实现。<br><strong>读操作已提交（Read Committed）：</strong> 读取未提交的数据是不允许的，它使用临时的共读锁和排写锁实现。这种隔离级别不允许脏读，但不可重读和幻读是允许的。<br><strong>可重读（Repeatable Read）：</strong> 说明事务保证能够再次读取相同的数据而不会失败。此隔离级别不允许脏读和不可重读，但幻读会出现。<br><strong>可串行化（Serializable）：</strong> 提供最严格的事务隔离。这个隔离级别不允许事务并行执行，只允许串行执行。这样，脏读、不可重读或幻读都可发生。  </p>
+<h3 id="事务隔离与隔离级别的关系："><a href="#事务隔离与隔离级别的关系：" class="headerlink" title="事务隔离与隔离级别的关系："></a>事务隔离与隔离级别的关系：</h3><table>
+<thead>
+<tr>
+<th align="left">隔离级别</th>
+<th align="left">脏读（Dirty Read）</th>
+<th align="left">不可重读（Unrepeatable read）</th>
+<th align="left">幻读（Phantom Read）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">读操作未提交（Read Uncommitted）</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">读操作已提交（Read Committed）</td>
+<td align="left">不可能</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">可重读（Repeatable Read）</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">可串行化（Serializable）</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h3 id="事务的传播（Propagation）"><a href="#事务的传播（Propagation）" class="headerlink" title="事务的传播（Propagation）"></a>事务的传播（Propagation）</h3><table>
+<thead>
+<tr>
+<th align="left">事务传播行为类型</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PROPAGATION_REQUIRED</td>
+<td align="left">如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是 最常见的选择。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_SUPPORTS</td>
+<td align="left">支持当前事务，如果当前没有事务，就以非事务方式执行。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_MANDATORY</td>
+<td align="left">使用当前的事务，如果当前没有事务，就抛出异常。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_REQUIRES_NEW</td>
+<td align="left">新建事务，如果当前存在事务，把当前事务挂起。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NOT_SUPPORTED</td>
+<td align="left">以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NEVER</td>
+<td align="left">以非事务方式执行，如果当前存在事务，则抛出异常。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NESTED</td>
+<td align="left">如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与 PROPAGATION_REQUIRED 类似的操作。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p><strong>readOnly</strong> 事务属性中的readOnly标志表示对应的事务应该被最优化为只读事务。这是一个最优化提示 。在一些情况下，一些事务策略能够起到显著的最优化效果，例如在使用Object/Relational映射工具 （如：Hibernate或TopLink）时避免dirty checking（试图“刷新”）。<br><strong>Timeout</strong> 在事务属性中还有定义“timeout”值的选项，指定事务超时为几秒。在JTA中，这将被简单地传递到J2EE服务器的事务协调程序，并据此得到相应的解释。  </p>
+<h3 id="事务的嵌套"><a href="#事务的嵌套" class="headerlink" title="事务的嵌套"></a>事务的嵌套</h3><ol>
+<li><strong>PROPAGATION_REQUIRED</strong> 加入当前正要执行的事务不在另外一个事务里，那么就起一个新的事务。即，如果存在主事务，则将此事务合并到主事务中，提交和回滚与主事务依赖，不存在主事务则会自起事务。</li>
+<li><strong>PROPAGATION_SUPPORTS</strong> 如果当前在事务中，即以事务的形式运行，如果当前不再一个事务中，那么就以非事务的形式运行。</li>
+<li><strong>PROPAGATION_MANDATORY</strong> 必须在一个事务中运行。也就是说，他只能被一个父事务调用。否则，他就要抛出异常</li>
+<li><strong>PROPAGATION_REQUIRES_NEW</strong> 在主事务中，创建一个新的事务（子事务）并挂起主事务，执行完子事务后，主事务继续执行，但是，如果子事务已经提交，当主事务失败回滚时，子事务是不回滚的</li>
+<li><strong>PROPAGATION_NOT_SUPPORTED</strong> 当前不支持事务，当存在事务中时，会将主事务挂起，当以非事务状态执行完后在继续执行主事务</li>
+<li><strong>PROPAGATION_NEVER</strong> 不能在事务中运行，否则抛异常。</li>
+<li><strong>PROPAGATION_NESTED</strong> 它与PROPAGATION_REQUIRES_NEW的区别是，不另起事务，与主事务相依，而且需要等主事务提交时才会提交，主事务回滚它也回滚。</li>
+</ol>
+<h3 id="Spring事务处理"><a href="#Spring事务处理" class="headerlink" title="Spring事务处理"></a>Spring事务处理</h3><p> Spring配置文件中关于事务配置总是由三个组成部分，分别是DataSource、TransactionManager和代理机制这三部分，无论哪种配置方式，一般变化的只是代理机制这部分。<br> Spring处理事务主要有五种方法：</p>
+<ol>
+<li>每个bin都有一个代理</li>
+<li>所有bin共享一个代理基类</li>
+<li>使用拦截器</li>
+<li>使用tx标签配置的拦截器</li>
+<li>全注解<br>此处只简单介绍全注解：<br>在配置好数据库配置后，需要 <em>定义事务管理器</em>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id&#x3D;&quot;transactionManager&quot;</span><br><span class="line">        class&#x3D;&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">    &lt;property name&#x3D;&quot;dataSource&quot; ref&#x3D;&quot;datasource&quot;&#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;bean&gt;</span><br></pre></td></tr></table></figure>
+然后在需要事务的方法上添加 @Transactional 注解。  </li>
+</ol>
+<h3 id="Transactional"><a href="#Transactional" class="headerlink" title="@Transactional"></a>@Transactional</h3><h4 id="Transactional的含义"><a href="#Transactional的含义" class="headerlink" title="@Transactional的含义"></a>@Transactional的含义</h4><p>关键点之一是要考虑两个独立的概念，它们都有各自的范围和生命周期：  </p>
+<ul>
+<li>persistence context(持久化上下文)</li>
+<li>database transaction（事务）<br>@Transactional本身定义了单个事务的范围。这个事务在persistence context的范围内。<br>JPA中的持久化上下文是EntityManager，内部实现使用了Hibernate Session（使用Hibernate作为持久化provider）<br>持久化上下文仅仅是一个同步对象，它记录了有限集合的Java对象的状态，并且保证这些对象的变化最终持久化到数据库。<br>这是与单个事务非常不同的概念。一个Entity Manager可以跨越多个事务使用，而且的确是这样使用的。  <h4 id="EntityManager和Transaction之间的关系"><a href="#EntityManager和Transaction之间的关系" class="headerlink" title="EntityManager和Transaction之间的关系:"></a>EntityManager和Transaction之间的关系:</h4>JPA Entity Manager最常用的方式是“Entity Manager per application transaction”(每个事务都有自己的实体管理器)模式。entity manager注入的常用方法是：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@PersistenceContext</span><br><span class="line">private EntityManager em;</span><br></pre></td></tr></table></figure>
+这里默认为“Entity Manager per transaction”模式。这种模式下如果在@Transactional方法内部使用该Entity Manager，那么该方法将在单一事务中运行。  </li>
+</ul>
+<h4 id="PersistenceContext的工作原理"><a href="#PersistenceContext的工作原理" class="headerlink" title="@PersistenceContext的工作原理"></a>@PersistenceContext的工作原理</h4><p>随之而来的问题就是@PersistenceContext如何仅在容器启动时注入entity manager，假定entity manager生命周期很短暂，而且每次请求需要多个entity manager。<br>答案是它不能：EntityManager是一个接口，注入到spring bean中的不是entity manager本身，而是在运行时代理具体entity manager的context aware proxy（上下文感知代理）。<br>通常用于代理的具体类为SharedEntityManagerInvocationHandler，借助调试器可以确认这一点。  </p>
+<h4 id="Transactional如何工作的"><a href="#Transactional如何工作的" class="headerlink" title="@Transactional如何工作的"></a>@Transactional如何工作的</h4><p>实现了EntityManager接口的持久化上下文代理并不是声明式事务管理的唯一部分，事实上包含三个组成部分：</p>
+<ul>
+<li>EntityManager Proxy本身</li>
+<li>事务的切面</li>
+<li>事务管理器  <h5 id="事务的切面："><a href="#事务的切面：" class="headerlink" title="事务的切面："></a>事务的切面：</h5>事务的切面是一个“around（环绕）”切面，在注解的业务方法前后都可以被调用。实现切面的具体类是TransactionInterceptor。<br>事务的切面有两个主要职责：  </li>
+<li>在’before’时，切面提供一个调用点，来决定被调用业务方法应该在正在进行事务的范围内运行，还是开始一个新的独立事务。  </li>
+<li>在’after’时，切面需要确定事务被提交，回滚或者继续运行。  </li>
+<li>在’before’时，事务切面自身不包含任何决策逻辑，是否开始新事务的决策委派给事务管理器完成。</li>
+</ul>
+<h5 id="事务管理器："><a href="#事务管理器：" class="headerlink" title="事务管理器："></a>事务管理器：</h5><p>事务管理器需要解决下面两个问题：    </p>
+<ul>
+<li>新的Entity Manager是否应该被创建？</li>
+<li>是否应该开始新的事务？  </li>
+</ul>
+<p>这些需要事务切面’before’逻辑被调用时决定。事务管理器的决策基于以下两点：  </p>
+<ul>
+<li>事务是否正在进行</li>
+<li>事务方法的propagation属性（比如REQUIRES_NEW总要开始新事务）  </li>
+</ul>
+<p>如果事务管理器确定要创建新事务，那么将：  </p>
+<ul>
+<li>创建一个新的entity manager</li>
+<li>entity manager绑定到当前线程</li>
+<li>从数据库连接池中获取连接</li>
+<li>将连接绑定到当前线程  </li>
+</ul>
+<blockquote>
+<p>摘自：<a href="https://www.cnblogs.com/mxmbk/p/5341258.html" target="_blank" rel="noopener">https://www.cnblogs.com/mxmbk/p/5341258.html</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/16/shell/shell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -387,6 +671,318 @@
 <h4 id="多行注解"><a href="#多行注解" class="headerlink" title="多行注解"></a>多行注解</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:&lt;&lt;!</span><br><span class="line">...</span><br><span class="line">!</span><br></pre></td></tr></table></figure>
 
 <h2 id="Shell-传递参数"><a href="#Shell-传递参数" class="headerlink" title="Shell 传递参数"></a>Shell 传递参数</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/basics/oom/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/15/basics/oom/" itemprop="url">线上排查OOM</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T11:28:31+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/basics/" itemprop="url" rel="index">
+                    <span itemprop="name">basics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>根据进程名称获取pid：ps -ef | grep “name” | grep -v grep | awk ‘{print $2}’</p>
+<h4 id="OOM-排查"><a href="#OOM-排查" class="headerlink" title="OOM 排查"></a>OOM 排查</h4><h5 id="最常见的原因："><a href="#最常见的原因：" class="headerlink" title="最常见的原因："></a>最常见的原因：</h5><ul>
+<li>有可能是内存分配确实过小，而正常业务使用了大量内存</li>
+<li>某一个对象被频繁申请，却没有释放，内存不断泄漏，导致内存耗尽</li>
+<li>某一个资源被频繁申请，系统资源耗尽，例如：不断创建线程，不断发起网络连接</li>
+</ul>
+<h5 id="一、确认是不是内存本身就分配过小"><a href="#一、确认是不是内存本身就分配过小" class="headerlink" title="一、确认是不是内存本身就分配过小"></a>一、确认是不是内存本身就分配过小</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap -heap PID</span><br></pre></td></tr></table></figure>
+<h5 id="二、找到最耗内存的对象"><a href="#二、找到最耗内存的对象" class="headerlink" title="二、找到最耗内存的对象"></a>二、找到最耗内存的对象</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap -histo PID | head -10</span><br></pre></td></tr></table></figure>
+<h5 id="三、确认是否是资源耗尽"><a href="#三、确认是否是资源耗尽" class="headerlink" title="三、确认是否是资源耗尽"></a>三、确认是否是资源耗尽</h5><p>查看进程创建的线程数，以及网络连接数，如果资源耗尽，也可能出现OOM。</p>
+<ul>
+<li>/proc/${PID}/fd | wc -l</li>
+<li>/proc/${PID}/task | wc -l （效果等同pstree -p | wc -l）<br>查看进程打开的句柄数和线程数。</li>
+</ul>
+<h5 id="线上服务CPU100-问题快速定位"><a href="#线上服务CPU100-问题快速定位" class="headerlink" title="线上服务CPU100%问题快速定位"></a>线上服务CPU100%问题快速定位</h5><h6 id="一、找到最耗CPU的进程"><a href="#一、找到最耗CPU的进程" class="headerlink" title="一、找到最耗CPU的进程"></a>一、找到最耗CPU的进程</h6><ul>
+<li>执行top -c ，显示进程运行信息列表</li>
+<li>键入P (大写p)，进程按照CPU使用率排序</li>
+</ul>
+<h5 id="二、找到最耗CPU的线程"><a href="#二、找到最耗CPU的线程" class="headerlink" title="二、找到最耗CPU的线程"></a>二、找到最耗CPU的线程</h5><ul>
+<li>top -Hp PID ，显示一个进程的线程运行信息列表</li>
+<li>键入P (大写p)，线程按照CPU使用率排序</li>
+</ul>
+<h5 id="三、将线程PID转化为16进制"><a href="#三、将线程PID转化为16进制" class="headerlink" title="三、将线程PID转化为16进制"></a>三、将线程PID转化为16进制</h5><ul>
+<li>printf “%x\n” TID</li>
+</ul>
+<h5 id="四、查看堆栈，找到线程在干嘛"><a href="#四、查看堆栈，找到线程在干嘛" class="headerlink" title="四、查看堆栈，找到线程在干嘛"></a>四、查看堆栈，找到线程在干嘛</h5><p>jstack PID | grep ‘0xXXX’ -C5 –color</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/14/basics/docker_basics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/14/basics/docker_basics/" itemprop="url">Docker</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T11:24:43+08:00">
+                2019-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/basics/" itemprop="url" rel="index">
+                    <span itemprop="name">basics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Docker简介"><a href="#Docker简介" class="headerlink" title="Docker简介"></a>Docker简介</h3><p>Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从Apache2.0协议开源。<br>Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。<br>容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>Web 应用的自动化打包和发布。</p>
+<p>自动化测试和持续集成、发布。</p>
+<p>在服务型环境中部署和调整数据库或其他的后台应用。</p>
+<p>从头编译或者扩展现有的OpenShift或Cloud Foundry平台来搭建自己的PaaS环境。</p>
+
           
         
       
@@ -1167,6 +1763,147 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/11/basics/github_basics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/11/basics/github_basics/" itemprop="url">GitHub</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-11T19:22:19+08:00">
+                2018-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/basics/" itemprop="url" rel="index">
+                    <span itemprop="name">basics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/java/cron_java/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1297,11 +2034,260 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/19/basics/es_basics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/19/basics/es_basics/" itemprop="url">ES基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-19T17:10:58+08:00">
+                2018-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/basics/" itemprop="url" rel="index">
+                    <span itemprop="name">basics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="RestHighLevelClient-6-5"><a href="#RestHighLevelClient-6-5" class="headerlink" title="RestHighLevelClient(6.5)"></a>RestHighLevelClient(6.5)</h3><p>官网：<a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/6.5/java-rest-low-usage-initialization.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/client/java-rest/6.5/java-rest-low-usage-initialization.html</a></p>
+<p>一 <br><br>RestClient实例可以通过相应的建立 RestClientBuilder的类，通过创建RestClient#builder(HttpHost…) 静态方法。唯一必需的参数是客户端将与之通信的一个或多个主机，作为HttpHost的实例提供 </p>
+<pre>
+RestClient restClient = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"),
+    new HttpHost("localhost", 9201, "http")).build();
+</pre>
+<p>该RestClient班是线程安全的，理想情况下具有相同的生命周期为使用它的应用程序。重要的是它在不再需要时关闭，以便它使用的所有资源得到正确释放，以及底层的http客户端实例及其线程：</p>
+<pre>
+restClient.close();
+</pre>
+<p>二 <br><br>RestClientBuilder还允许在构建RestClient实例时可选地设置以下配置参数：</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"));
+Header[] defaultHeaders = new Header[]{new BasicHeader("header", "value")};
+builder.setDefaultHeaders(defaultHeaders);
+</pre>
+<p>设置需要随每个请求一起发送的默认标头，以防止必须为每个请求指定它们</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"));
+builder.setMaxRetryTimeoutMillis(10000);
+</pre>
+
+<p>设置在多次尝试同一请求时应该遵守的超时。默认值为30秒，与默认套接字超时相同。如果自定义套接字超时，则应相应地调整最大重试超时</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+        new HttpHost("localhost", 9200, "http"));
+builder.setFailureListener(new RestClient.FailureListener() {
+    @Override
+    public void onFailure(Node node) {
+
+    }
+});
+</pre>
+<p>设置一个侦听器，每次节点出现故障时都会收到通知，以防需要采取措施。启用嗅探失败时在内部使用。</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"));
+builder.setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS);
+</pre>
+<p>设置节点选择器以用于过滤客户端将请求发送到客户端本身的节点之间的节点。这有助于防止在启用嗅探时向专用主节点发送请求。默认情况下，客户端向每个配置的节点发送请求。</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+        new HttpHost("localhost", 9200, "http"));
+builder.setRequestConfigCallback(
+    new RestClientBuilder.RequestConfigCallback() {
+        @Override
+        public RequestConfig.Builder customizeRequestConfig(
+                RequestConfig.Builder requestConfigBuilder) {
+            return requestConfigBuilder.setSocketTimeout(10000); 
+        }
+    });
+</pre>
+
+
+<p>设置允许修改默认请求配置的回调（例如，请求超时，身份验证或org.apache.http.client.config.RequestConfig.Builder 允许设置的任何内容 ）</p>
+<pre>
+RestClientBuilder builder = RestClient.builder（
+    new HttpHost（“localhost”，9200，“http”））; 
+builder.setHttpClientConfigCallback（new HttpClientConfigCallback（）{ 
+        @ 
+        Override public HttpAsyncClientBuilder customizeHttpClient（
+                HttpAsyncClientBuilder httpClientBuilder）{ 
+            return httpClientBuilder.setProxy（
+                new HttpHost（“proxy”，9000，“http”））;  
+        } 
+    };
+</pre>
+
+<h4 id="java-使用RestHighLevelClient"><a href="#java-使用RestHighLevelClient" class="headerlink" title="java 使用RestHighLevelClient"></a>java 使用RestHighLevelClient</h4><pre>
+SearchSourceBuilder ssb = new SearchSourceBuilder()
+ssb.size(100)
+//构建搜索的query语句
+ssb.query(<span style="color:red">createQuery()</span>)
+//设置返回字段包含和不包含哪些字段，可为null
+ssb.fetchSource(new String[],new String[])
+//设置超时时间
+ssb.timeout(new TimeValue(15,TimeUnit.SECONDS))
+
+//定义参数
+SearchRequest sr = new SearchRequest(<span style="color:red">getIndex()</span>).routing(queryParam.tenantId)
+sr.source(ssb)
+
+//执行获取结果
+SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
+</pre>
+
+
+<h3 id="Es基本操作"><a href="#Es基本操作" class="headerlink" title="Es基本操作"></a>Es基本操作</h3><p><span style="color:red">index</span>（索引）<br>相当于mysql中的数据库<br><span style="color:red">type</span>（类型）<br>相当于mysql中的一张表<br><span style="color:red">document</span>（文档）<br>相当于mysql中的一行（一条记录）<br><span style="color:red">field</span>（域）<br>相当于mysql中的一列（一个字段）<br><span style="color:red">节点</span><br>一个服务器，由一个名字来标识<br><span style="color:red">集群</span><br>一个或多个节点组织在一起<br><span style="color:red">分片</span><br>将一份数据划分为多小份的能力，允许水平分割和扩展容量。多个分片可以响应请求，提高性能和吞吐量</p>
+<p>创建一个索引（即创建数据库）：（index_name为索引的名称）<br>PUT index_name<br>{<br>“settings” : {<br>“number_of_shards” : 5,<br>“number_of_replicas” : 1<br>}<br>}</p>
+<p><span style="color:red">查看索引信息：</span>（即查看数据库）<br>GET index_name</p>
+<p>GET index_name/_settings</p>
+<p><span style="color:red">查看映射</span><br>GET index_name/_mapping</p>
+<p><span style="color:red">设置映射：</span>(即设置字段类型)<br>PUT index_name<br>{<br>“mappings” : {<br>“type_name” : {<br>“properties” : {<br>“field_name1” : {<br>“type” : “keyword”<br>},<br>“field_name2” : {<br>“type” : “integet”<br>},<br>“field_name3” : {<br>“type” : “text”,<br>“analyzer” : “ik_max_word”<br>}<br>}<br>}<br>}<br>}</p>
+<p><span style="color:red">插入文档：</span>（即插入一条数据）<br>可以指定文档id<br>PUT index_name/type_name/id   （相当于PUT 数据库名/表名/id）<br> 也可以不指定id<br>POST index_name/type_name</p>
+<p><span style="color:red">查看文档：</span><br>GET index_name/type_name/id<br>查看_source中的部分字段：<br>GET index_name/type_name/id?_source=field1,field2</p>
+<p><span style="color:red">修改文档：</span><br>1.一种是通过PUT的全覆盖方式，旧数据将被删除，以新的代替<br>PUT index_name/type_name/id<br>2.另一种是通过POST方式，只对部分字段进行修改.<br>POST index_name/type_name/id/_update<br>{<br>“doc” : {<br>“field_name” : “ “<br>}<br>}</p>
+<p><span style="color:red">删除文档：</span><br>DELETE index_name/type_name/id</p>
+<p>###安装es<br>gitHub:<br><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="noopener">https://github.com/elastic/elasticsearch</a></p>
+<p>@PostConstruct和@PreDestroy这两个作用于Servlet生命周期的注解，实现Bean初始化之前和销毁之前的自定义操作</p>
+<p><span style="color:red">下载并解压</span><br>$ wget <a href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.zip" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.zip</a><br>$ unzip elasticsearch-5.5.1.zip<br>$ cd elasticsearch-5.5.1/<br><span style="color:red">启动</span>    ./bin/elasticsearch<br>第一次启动时内存不够，将config中jvm.options中的<br>-Xms512M<br>-Xmx512M</p>
+<p>由于需要修改磁盘，所以不能用root用户启动，需要新建用户<br><span style="color:red">创建新用户并赋权限</span><br>第一步：liunx创建新用户  adduser XXX    然后给创建的用户加密码 passwd XXX    输入两次密码。<br>第二步：切换刚才创建的用户 su XXX  然后执行elasticsearch  会显示Permission denied 权限不足。<br>第四步：root给XXX赋权限，chown -R XXX /你的elasticsearch安装目录。</p>
+<p><span style="color:red">查看当前节点的所有索引(index)</span><br>curl -X GET ‘<a href="http://localhost:9200/_cat/indices?v" target="_blank" rel="noopener">http://localhost:9200/_cat/indices?v</a><br><span style="color:red">列出每个 Index 所包含的 Type</span><br>curl ‘localhost:9200/_mapping?pretty=true’</p>
+<p>curl -<REST Verb> <Node>:<Port>/<Index>/<Type><ID></p>
+<p><span style="color:red">创建索引：</span><br>curl -XPUT ‘localhost:9200/dxh?pretty’<br>将一个信息索引到dxh下的ljf类型中，这个文档的id为1：<br>curl -XPUT ‘localhost:9200/dxh/ljf/1?pretty’ -d ‘{ “name”:”dongxiaohua” }’<br><span style="color:red">获取文档：</span></p>
+<h3 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h3><p><span style="color:red">按文档数量降序列出所有文档信息</span><br>GET /_cat/indices?v&amp;s=docs.count:desc<br><span style="color:red">按文档大小降序列出index</span><br>GET /_cat/indices?v&amp;h=i,tm&amp;s=tm:desc</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -1347,7 +2333,7 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1358,7 +2344,7 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 
               </div>
@@ -1369,7 +2355,7 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
