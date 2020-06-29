@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="spring transaction mysql," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是Spring事务 事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。 数据库向用户提供保存当前程序状态的方法，叫事务提交（commit）；当事务执行过程中，使数据库忽略当前的状态并回到前面保存的状态的方法叫事务回滚（rollback）   事务特性（ACID）原子性（atomicity）： 将事务中所做的操作捆绑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring事务处理">
+<meta property="og:url" content="http://yoursite.com/2019/05/17/spring/spring_transaction/index.html">
+<meta property="og:site_name" content="隔壁董小花同学">
+<meta property="og:description" content="什么是Spring事务 事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。 数据库向用户提供保存当前程序状态的方法，叫事务提交（commit）；当事务执行过程中，使数据库忽略当前的状态并回到前面保存的状态的方法叫事务回滚（rollback）   事务特性（ACID）原子性（atomicity）： 将事务中所做的操作捆绑">
+<meta property="article:published_time" content="2019-05-17T01:45:41.218Z">
+<meta property="article:modified_time" content="2019-09-20T02:47:13.851Z">
+<meta property="article:author" content="xiaohua Dong">
+<meta property="article:tag" content="spring transaction mysql">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/17/spring/spring_transaction/"/>
+
+
+
+
+
+  <title>Spring事务处理 | 隔壁董小花同学</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">隔壁董小花同学</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/17/spring/spring_transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring事务处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-17T09:45:41+08:00">
+                2019-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="什么是Spring事务"><a href="#什么是Spring事务" class="headerlink" title="什么是Spring事务"></a>什么是Spring事务</h3><pre>
+事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。
+数据库向用户提供保存当前程序状态的方法，叫事务提交（commit）；当事务执行过程中，使数据库忽略当前的状态并回到前面保存的状态的方法叫事务回滚（rollback）
+</pre>
+
+<h3 id="事务特性（ACID）"><a href="#事务特性（ACID）" class="headerlink" title="事务特性（ACID）"></a>事务特性（ACID）</h3><p><strong>原子性（atomicity）：</strong> 将事务中所做的操作捆绑成一个原子单元，即对于事务所进行的数据修改等操作，要么全部执行，要么全部不执行。<br><strong>一致性（Consistency)：</strong> 事务在完成时，必须使所有的数据都保持一致状态，而且在相关数据中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构都应该是正确的。<br><strong>隔离性（Isolation）：</strong> 由并发事务所做的修改必须与任何其他事务所做的修改相隔离。事务查看数据时数据所处的状态，要么是被另一并发事务修改之前的状态，要么是被另一并发事务修改之后的状态，即事务不会查看由另一个并发事务正在修改的数据。这种隔离方式也叫可串行性。<br><strong>持久性（Durability）：</strong> 事务完成之后，它对系统的影响是永久的，即使出现系统故障也是如此。  </p>
+<h3 id="事务隔离（Isolation-Level）"><a href="#事务隔离（Isolation-Level）" class="headerlink" title="事务隔离（Isolation Level）"></a>事务隔离（Isolation Level）</h3><p>事务隔离意味着对于某个运行着的事务来说，类似于系统中只有一个事物，其他并发事务都不存在一样<br>大部分情况下很少使用安全隔离的事务，但是不完全隔离的事务会带来如下问题：<br><strong>更新丢失（Lost Update）：</strong> 两个事务都企图去更新一行数据，导致事务抛出异常退出。<br><strong>脏数据（Dirty Read）：</strong> 如果第二个应用程序使用了第一个应用程序修改过的数据，而这个数据处于未提交状态，这时就会发生脏读。第一个应用程序随后可能会请求回滚被修改的数据，从而导致第二个事务使用的数据被损坏，即所谓的“变脏”。<br><strong>不可重读（Unrepeatable Read）：</strong> 一个事务两次读同一行数据，可是这两次读到的数据不一样，就叫不可重读。如果一个事务在提交数据之前，另一个事务可以修改和删除这些数据，就会发生不可重读。<br><strong>幻读（Phantom Read）：</strong> 一个事务执行了两次查询，发现第二次查询结果比第一次查询多出了一行，这可能是因为另一个事务在这两次查询之间插入了新行。  </p>
+<h4 id="那么为了避免此类问题，提供出了以下隔离级别来防范"><a href="#那么为了避免此类问题，提供出了以下隔离级别来防范" class="headerlink" title="那么为了避免此类问题，提供出了以下隔离级别来防范:"></a>那么为了避免此类问题，提供出了以下隔离级别来防范:</h4><p><strong>读操作未提交（Read Uncommitted）：</strong> 读取未提交的数据是允许的。说明一个事务在提交前，其变化对于其他事务来说是可见的。这样脏读、不可重读和幻读都是允许的。当一个事务已经写入一行数据但未提交，其他事务都不能再写入此行数据；但是，任何事务都可以读任何数据。这个隔离级别使用排写锁实现。<br><strong>读操作已提交（Read Committed）：</strong> 读取未提交的数据是不允许的，它使用临时的共读锁和排写锁实现。这种隔离级别不允许脏读，但不可重读和幻读是允许的。<br><strong>可重读（Repeatable Read）：</strong> 说明事务保证能够再次读取相同的数据而不会失败。此隔离级别不允许脏读和不可重读，但幻读会出现。<br><strong>可串行化（Serializable）：</strong> 提供最严格的事务隔离。这个隔离级别不允许事务并行执行，只允许串行执行。这样，脏读、不可重读或幻读都可发生。  </p>
+<h3 id="事务隔离与隔离级别的关系："><a href="#事务隔离与隔离级别的关系：" class="headerlink" title="事务隔离与隔离级别的关系："></a>事务隔离与隔离级别的关系：</h3><table>
+<thead>
+<tr>
+<th align="left">隔离级别</th>
+<th align="left">脏读（Dirty Read）</th>
+<th align="left">不可重读（Unrepeatable read）</th>
+<th align="left">幻读（Phantom Read）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">读操作未提交（Read Uncommitted）</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">读操作已提交（Read Committed）</td>
+<td align="left">不可能</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">可重读（Repeatable Read）</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">可串行化（Serializable）</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h3 id="事务的传播（Propagation）"><a href="#事务的传播（Propagation）" class="headerlink" title="事务的传播（Propagation）"></a>事务的传播（Propagation）</h3><table>
+<thead>
+<tr>
+<th align="left">事务传播行为类型</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PROPAGATION_REQUIRED</td>
+<td align="left">如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是 最常见的选择。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_SUPPORTS</td>
+<td align="left">支持当前事务，如果当前没有事务，就以非事务方式执行。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_MANDATORY</td>
+<td align="left">使用当前的事务，如果当前没有事务，就抛出异常。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_REQUIRES_NEW</td>
+<td align="left">新建事务，如果当前存在事务，把当前事务挂起。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NOT_SUPPORTED</td>
+<td align="left">以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NEVER</td>
+<td align="left">以非事务方式执行，如果当前存在事务，则抛出异常。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NESTED</td>
+<td align="left">如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与 PROPAGATION_REQUIRED 类似的操作。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p><strong>readOnly</strong> 事务属性中的readOnly标志表示对应的事务应该被最优化为只读事务。这是一个最优化提示 。在一些情况下，一些事务策略能够起到显著的最优化效果，例如在使用Object/Relational映射工具 （如：Hibernate或TopLink）时避免dirty checking（试图“刷新”）。<br><strong>Timeout</strong> 在事务属性中还有定义“timeout”值的选项，指定事务超时为几秒。在JTA中，这将被简单地传递到J2EE服务器的事务协调程序，并据此得到相应的解释。  </p>
+<h3 id="事务的嵌套"><a href="#事务的嵌套" class="headerlink" title="事务的嵌套"></a>事务的嵌套</h3><ol>
+<li><strong>PROPAGATION_REQUIRED</strong> 加入当前正要执行的事务不在另外一个事务里，那么就起一个新的事务。即，如果存在主事务，则将此事务合并到主事务中，提交和回滚与主事务依赖，不存在主事务则会自起事务。</li>
+<li><strong>PROPAGATION_SUPPORTS</strong> 如果当前在事务中，即以事务的形式运行，如果当前不再一个事务中，那么就以非事务的形式运行。</li>
+<li><strong>PROPAGATION_MANDATORY</strong> 必须在一个事务中运行。也就是说，他只能被一个父事务调用。否则，他就要抛出异常</li>
+<li><strong>PROPAGATION_REQUIRES_NEW</strong> 在主事务中，创建一个新的事务（子事务）并挂起主事务，执行完子事务后，主事务继续执行，但是，如果子事务已经提交，当主事务失败回滚时，子事务是不回滚的</li>
+<li><strong>PROPAGATION_NOT_SUPPORTED</strong> 当前不支持事务，当存在事务中时，会将主事务挂起，当以非事务状态执行完后在继续执行主事务</li>
+<li><strong>PROPAGATION_NEVER</strong> 不能在事务中运行，否则抛异常。</li>
+<li><strong>PROPAGATION_NESTED</strong> 它与PROPAGATION_REQUIRES_NEW的区别是，不另起事务，与主事务相依，而且需要等主事务提交时才会提交，主事务回滚它也回滚。</li>
+</ol>
+<h3 id="Spring事务处理"><a href="#Spring事务处理" class="headerlink" title="Spring事务处理"></a>Spring事务处理</h3><p> Spring配置文件中关于事务配置总是由三个组成部分，分别是DataSource、TransactionManager和代理机制这三部分，无论哪种配置方式，一般变化的只是代理机制这部分。<br> Spring处理事务主要有五种方法：</p>
+<ol>
+<li>每个bin都有一个代理</li>
+<li>所有bin共享一个代理基类</li>
+<li>使用拦截器</li>
+<li>使用tx标签配置的拦截器</li>
+<li>全注解<br>此处只简单介绍全注解：<br>在配置好数据库配置后，需要 <em>定义事务管理器</em>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id&#x3D;&quot;transactionManager&quot;</span><br><span class="line">        class&#x3D;&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">    &lt;property name&#x3D;&quot;dataSource&quot; ref&#x3D;&quot;datasource&quot;&#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;bean&gt;</span><br></pre></td></tr></table></figure>
+然后在需要事务的方法上添加 @Transactional 注解。  </li>
+</ol>
+<h3 id="Transactional"><a href="#Transactional" class="headerlink" title="@Transactional"></a>@Transactional</h3><h4 id="Transactional的含义"><a href="#Transactional的含义" class="headerlink" title="@Transactional的含义"></a>@Transactional的含义</h4><p>关键点之一是要考虑两个独立的概念，它们都有各自的范围和生命周期：  </p>
+<ul>
+<li>persistence context(持久化上下文)</li>
+<li>database transaction（事务）<br>@Transactional本身定义了单个事务的范围。这个事务在persistence context的范围内。<br>JPA中的持久化上下文是EntityManager，内部实现使用了Hibernate Session（使用Hibernate作为持久化provider）<br>持久化上下文仅仅是一个同步对象，它记录了有限集合的Java对象的状态，并且保证这些对象的变化最终持久化到数据库。<br>这是与单个事务非常不同的概念。一个Entity Manager可以跨越多个事务使用，而且的确是这样使用的。  <h4 id="EntityManager和Transaction之间的关系"><a href="#EntityManager和Transaction之间的关系" class="headerlink" title="EntityManager和Transaction之间的关系:"></a>EntityManager和Transaction之间的关系:</h4>JPA Entity Manager最常用的方式是“Entity Manager per application transaction”(每个事务都有自己的实体管理器)模式。entity manager注入的常用方法是：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@PersistenceContext</span><br><span class="line">private EntityManager em;</span><br></pre></td></tr></table></figure>
+这里默认为“Entity Manager per transaction”模式。这种模式下如果在@Transactional方法内部使用该Entity Manager，那么该方法将在单一事务中运行。  </li>
+</ul>
+<h4 id="PersistenceContext的工作原理"><a href="#PersistenceContext的工作原理" class="headerlink" title="@PersistenceContext的工作原理"></a>@PersistenceContext的工作原理</h4><p>随之而来的问题就是@PersistenceContext如何仅在容器启动时注入entity manager，假定entity manager生命周期很短暂，而且每次请求需要多个entity manager。<br>答案是它不能：EntityManager是一个接口，注入到spring bean中的不是entity manager本身，而是在运行时代理具体entity manager的context aware proxy（上下文感知代理）。<br>通常用于代理的具体类为SharedEntityManagerInvocationHandler，借助调试器可以确认这一点。  </p>
+<h4 id="Transactional如何工作的"><a href="#Transactional如何工作的" class="headerlink" title="@Transactional如何工作的"></a>@Transactional如何工作的</h4><p>实现了EntityManager接口的持久化上下文代理并不是声明式事务管理的唯一部分，事实上包含三个组成部分：</p>
+<ul>
+<li>EntityManager Proxy本身</li>
+<li>事务的切面</li>
+<li>事务管理器  <h5 id="事务的切面："><a href="#事务的切面：" class="headerlink" title="事务的切面："></a>事务的切面：</h5>事务的切面是一个“around（环绕）”切面，在注解的业务方法前后都可以被调用。实现切面的具体类是TransactionInterceptor。<br>事务的切面有两个主要职责：  </li>
+<li>在’before’时，切面提供一个调用点，来决定被调用业务方法应该在正在进行事务的范围内运行，还是开始一个新的独立事务。  </li>
+<li>在’after’时，切面需要确定事务被提交，回滚或者继续运行。  </li>
+<li>在’before’时，事务切面自身不包含任何决策逻辑，是否开始新事务的决策委派给事务管理器完成。</li>
+</ul>
+<h5 id="事务管理器："><a href="#事务管理器：" class="headerlink" title="事务管理器："></a>事务管理器：</h5><p>事务管理器需要解决下面两个问题：    </p>
+<ul>
+<li>新的Entity Manager是否应该被创建？</li>
+<li>是否应该开始新的事务？  </li>
+</ul>
+<p>这些需要事务切面’before’逻辑被调用时决定。事务管理器的决策基于以下两点：  </p>
+<ul>
+<li>事务是否正在进行</li>
+<li>事务方法的propagation属性（比如REQUIRES_NEW总要开始新事务）  </li>
+</ul>
+<p>如果事务管理器确定要创建新事务，那么将：  </p>
+<ul>
+<li>创建一个新的entity manager</li>
+<li>entity manager绑定到当前线程</li>
+<li>从数据库连接池中获取连接</li>
+<li>将连接绑定到当前线程  </li>
+</ul>
+<blockquote>
+<p>摘自：<a href="https://www.cnblogs.com/mxmbk/p/5341258.html" target="_blank" rel="noopener">https://www.cnblogs.com/mxmbk/p/5341258.html</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spring-transaction-mysql/" rel="tag"># spring transaction mysql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/16/shell/shell/" rel="next" title="Shell编程">
+                <i class="fa fa-chevron-left"></i> Shell编程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/23/shell/dubbo_telnet/" rel="prev" title="dubbo服务的telnet">
+                dubbo服务的telnet <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xiaohua Dong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Spring事务"><span class="nav-number">1.</span> <span class="nav-text">什么是Spring事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务特性（ACID）"><span class="nav-number">2.</span> <span class="nav-text">事务特性（ACID）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务隔离（Isolation-Level）"><span class="nav-number">3.</span> <span class="nav-text">事务隔离（Isolation Level）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#那么为了避免此类问题，提供出了以下隔离级别来防范"><span class="nav-number">3.1.</span> <span class="nav-text">那么为了避免此类问题，提供出了以下隔离级别来防范:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务隔离与隔离级别的关系："><span class="nav-number">4.</span> <span class="nav-text">事务隔离与隔离级别的关系：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务的传播（Propagation）"><span class="nav-number">5.</span> <span class="nav-text">事务的传播（Propagation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务的嵌套"><span class="nav-number">6.</span> <span class="nav-text">事务的嵌套</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring事务处理"><span class="nav-number">7.</span> <span class="nav-text">Spring事务处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transactional"><span class="nav-number">8.</span> <span class="nav-text">@Transactional</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Transactional的含义"><span class="nav-number">8.1.</span> <span class="nav-text">@Transactional的含义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EntityManager和Transaction之间的关系"><span class="nav-number">8.2.</span> <span class="nav-text">EntityManager和Transaction之间的关系:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PersistenceContext的工作原理"><span class="nav-number">8.3.</span> <span class="nav-text">@PersistenceContext的工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transactional如何工作的"><span class="nav-number">8.4.</span> <span class="nav-text">@Transactional如何工作的</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#事务的切面："><span class="nav-number">8.4.1.</span> <span class="nav-text">事务的切面：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#事务管理器："><span class="nav-number">8.4.2.</span> <span class="nav-text">事务管理器：</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohua Dong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

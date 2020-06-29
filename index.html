@@ -797,6 +797,226 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/23/spring/spring_mvc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/23/spring/spring_mvc/" itemprop="url">Spring MVC 工作原理和内部流程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-23T16:50:25+08:00">
+                2019-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Spring MVC 工作原理图</p>
+<h3 id="SpringMVC流程"><a href="#SpringMVC流程" class="headerlink" title="SpringMVC流程"></a>SpringMVC流程</h3><p>1、用户发送请求至前端控制器DispatcherServlet。<br>2、DispatcherServlet收到请求调用HandlerMapping处理器映射器。<br>3、处理器映射器找到具体的处理器(可以根据xml配置、注解进行查找)，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。<br>4、DispatcherServlet调用HandlerAdapter处理器适配器。<br>5、HandlerAdapter经过适配调用具体的处理器(Controller，也叫后端控制器)。<br>6、Controller执行完成返回ModelAndView。<br>7、HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet。<br>8、DispatcherServlet将ModelAndView传给ViewReslover视图解析器。<br>9、ViewReslover解析后返回具体View。<br>10、DispatcherServlet根据View进行渲染视图（即将模型数据填充至视图中）。<br>11、DispatcherServlet响应用户。 </p>
+<h3 id="组件说明："><a href="#组件说明：" class="headerlink" title="组件说明："></a>组件说明：</h3><p>以下组件通常使用框架提供实现:<br>DispatcherServlet：作为前端控制器，整个流程控制的中心，控制其它组件执行，统一调度，降低组件之间的耦合性，提高每个组件的扩展性。<br>HandlerMapping：通过扩展处理器映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等.<br>HandlAdapter：通过扩展处理器适配器，支持更多类型的处理器。<br>ViewResolver：通过扩展视图解析器，支持更多类型的视图解析，例如：jsp、freemarker、pdf、excel等。  </p>
+<h3 id="组件："><a href="#组件：" class="headerlink" title="组件："></a>组件：</h3><ol>
+<li>前端控制器DispatcherServlet（不需要工程师开发）,由框架提供  </li>
+</ol>
+<ul>
+<li>作用：接收请求，响应结果，相当于转发器，中央处理器。<br>有了dispatcherServlet减少了其它组件之间的耦合度。用户请求到达前端控制器，它就相当于mvc模式中的c，dispatcherServlet是整个流程控制的中心，由它调用其它组件处理用户的请求，dispatcherServlet的存在降低了组件之间的耦合性。  </li>
+</ul>
+<ol start="2">
+<li>处理器映射器HandlerMapping(不需要工程师开发),由框架提供  </li>
+</ol>
+<ul>
+<li>作用：根据请求的url查找Handler<br>HandlerMapping负责根据用户请求找到Handler即处理器，springmvc提供了不同的映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等。</li>
+</ul>
+<ol start="3">
+<li>处理器适配器HandlerAdapter  </li>
+</ol>
+<ul>
+<li>作用：按照特定规则（HandlerAdapter要求的规则）去执行Handler<br>通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。  </li>
+</ul>
+<ol start="4">
+<li>处理器Handler(需要工程师开发)  </li>
+</ol>
+<ul>
+<li>注意：编写Handler时按照HandlerAdapter的要求去做，这样适配器才可以去正确执行Handler<br>Handler 是继DispatcherServlet前端控制器的后端控制器，在DispatcherServlet的控制下Handler对具体的用户请求进行处理。<br>由于Handler涉及到具体的用户业务请求，所以一般情况需要工程师根据业务需求开发Handler。  </li>
+</ul>
+<ol start="5">
+<li>视图解析器View resolver(不需要工程师开发),由框架提供  </li>
+</ol>
+<ul>
+<li>作用：进行视图解析，根据逻辑视图名解析成真正的视图（view）<br>View Resolver负责将处理结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户。 springmvc框架提供了很多的View视图类型，包括：jstlView、freemarkerView、pdfView等。<br>一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由工程师根据业务需求开发具体的页面。  </li>
+</ul>
+<ol start="6">
+<li>视图View(需要工程师开发jsp…)<br>View是一个接口，实现类支持不同的View类型（jsp、freemarker、pdf…）  <h4 id="核心架构的具体流程步骤如下："><a href="#核心架构的具体流程步骤如下：" class="headerlink" title="核心架构的具体流程步骤如下："></a>核心架构的具体流程步骤如下：</h4></li>
+<li>首先用户发送请求——&gt;DispatcherServlet，前端控制器收到请求后自己不进行处理，而是委托给其他的解析器进行处理，作为统一访问点，进行全局的流程控制；</li>
+<li>DispatcherServlet——&gt;HandlerMapping， HandlerMapping 将会把请求映射为HandlerExecutionChain 对象（包含一个Handler 处理器（页面控制器）对象、多个HandlerInterceptor 拦截器）对象，通过这种策略模式，很容易添加新的映射策略；</li>
+<li>DispatcherServlet——&gt;HandlerAdapter，HandlerAdapter 将会把处理器包装为适配器，从而支持多种类型的处理器，即适配器设计模式的应用，从而很容易支持很多类型的处理器；</li>
+<li>HandlerAdapter——&gt;处理器功能处理方法的调用，HandlerAdapter 将会根据适配的结果调用真正的处理器的功能处理方法，完成功能处理；并返回一个ModelAndView 对象（包含模型数据、逻辑视图名）；</li>
+<li>ModelAndView的逻辑视图名——&gt; ViewResolver， ViewResolver 将把逻辑视图名解析为具体的View，通过这种策略模式，很容易更换其他视图技术；</li>
+<li>View——&gt;渲染，View会根据传进来的Model模型数据进行渲染，此处的Model实际是一个Map数据结构，因此很容易支持其他视图技术；</li>
+<li>返回控制权给DispatcherServlet，由DispatcherServlet返回响应给用户，到此一个流程结束。<h4 id="下边两个组件通常情况下需要开发："><a href="#下边两个组件通常情况下需要开发：" class="headerlink" title="下边两个组件通常情况下需要开发："></a>下边两个组件通常情况下需要开发：</h4></li>
+</ol>
+<ul>
+<li>Handler：处理器，即后端控制器用controller表示。  </li>
+<li>View：视图，即展示给用户的界面，视图中通常需要标签语言展示模型数据。  </li>
+</ul>
+<p>在将SpringMVC之前我们先来看一下什么是MVC模式<br>MVC：MVC是一种设计模式<br>MVC的原理图：<br><img src="picture/mvc.png" alt="">  </p>
+<h4 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h4><ul>
+<li>M-Model 模型（完成业务逻辑：有javaBean构成，service+dao+entity）  </li>
+<li>V-View 视图（做界面的展示  jsp，html……）  </li>
+<li>C-Controller 控制器（接收请求—&gt;调用模型—&gt;根据结果派发页面）  </li>
+</ul>
+<h4 id="springMVC是什么"><a href="#springMVC是什么" class="headerlink" title="springMVC是什么"></a>springMVC是什么</h4><p>　　springMVC是一个MVC的开源框架，springMVC=struts2+spring，springMVC就相当于是Struts2加上sring的整合，但是这里有一个疑惑就是，springMVC和spring是什么样的关系呢？这个在百度百科上有一个很好的解释：意思是说，springMVC是spring的一个后续产品，其实就是spring在原有基础上，又提供了web应用的MVC模块，可以简单的把springMVC理解为是spring的一个模块（类似AOP，IOC这样的模块），网络上经常会说springMVC和spring无缝集成，其实springMVC就是spring的一个子模块，所以根本不需要同spring进行整合。  </p>
+<p>SpringMVC的原理图：<br><img src="picture/spring_mvc.png" alt=""><br>看到这个图大家可能会有很多的疑惑，现在我们来看一下这个图的步骤：（可以对比MVC的原理图进行理解）  </p>
+<ul>
+<li>第一步:用户发起请求到前端控制器（DispatcherServlet）  </li>
+<li>第二步：前端控制器请求处理器映射器（HandlerMappering）去查找处理器（Handle）：通过xml配置或者注解进行查找  </li>
+<li>第三步：找到以后处理器映射器（HandlerMappering）像前端控制器返回执行链（HandlerExecutionChain）  </li>
+<li>第四步：前端控制器（DispatcherServlet）调用处理器适配器（HandlerAdapter）去执行处理器（Handler）  </li>
+<li>第五步：处理器适配器去执行Handler  </li>
+<li>第六步：Handler执行完给处理器适配器返回ModelAndView  </li>
+<li>第七步：处理器适配器向前端控制器返回ModelAndView  </li>
+<li>第八步：前端控制器请求视图解析器（ViewResolver）去进行视图解析  </li>
+<li>第九步：视图解析器像前端控制器返回View  </li>
+<li>第十步：前端控制器对视图进行渲染  </li>
+<li>第十一步：前端控制器向用户响应结果  </li>
+</ul>
+<p>看到这些步骤我相信大家很感觉非常的乱，这是正常的，但是这里主要是要大家理解springMVC中的几个组件：  </p>
+<ul>
+<li>前端控制器（DispatcherServlet）：接收请求，响应结果，相当于电脑的CPU。  </li>
+<li>处理器映射器（HandlerMapping）：根据URL去查找处理器  </li>
+<li>处理器（Handler）：（需要程序员去写代码处理逻辑的）  </li>
+<li>处理器适配器（HandlerAdapter）：会把处理器包装成适配器，这样就可以支持多种类型的处理器，类比笔记本的适配器（适配器模式的应用）  </li>
+<li>视图解析器（ViewResovler）：进行视图解析，多返回的字符串，进行处理，可以解析成对应的页面  </li>
+</ul>
+<blockquote>
+<p>摘自：<a href="https://www.cnblogs.com/xiaoxi/p/6164383.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoxi/p/6164383.html</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/31/http/time_wait/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1490,6 +1710,290 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/17/spring/spring_transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/17/spring/spring_transaction/" itemprop="url">Spring事务处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-17T09:45:41+08:00">
+                2019-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="什么是Spring事务"><a href="#什么是Spring事务" class="headerlink" title="什么是Spring事务"></a>什么是Spring事务</h3><pre>
+事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。
+数据库向用户提供保存当前程序状态的方法，叫事务提交（commit）；当事务执行过程中，使数据库忽略当前的状态并回到前面保存的状态的方法叫事务回滚（rollback）
+</pre>
+
+<h3 id="事务特性（ACID）"><a href="#事务特性（ACID）" class="headerlink" title="事务特性（ACID）"></a>事务特性（ACID）</h3><p><strong>原子性（atomicity）：</strong> 将事务中所做的操作捆绑成一个原子单元，即对于事务所进行的数据修改等操作，要么全部执行，要么全部不执行。<br><strong>一致性（Consistency)：</strong> 事务在完成时，必须使所有的数据都保持一致状态，而且在相关数据中，所有规则都必须应用于事务的修改，以保持所有数据的完整性。事务结束时，所有的内部数据结构都应该是正确的。<br><strong>隔离性（Isolation）：</strong> 由并发事务所做的修改必须与任何其他事务所做的修改相隔离。事务查看数据时数据所处的状态，要么是被另一并发事务修改之前的状态，要么是被另一并发事务修改之后的状态，即事务不会查看由另一个并发事务正在修改的数据。这种隔离方式也叫可串行性。<br><strong>持久性（Durability）：</strong> 事务完成之后，它对系统的影响是永久的，即使出现系统故障也是如此。  </p>
+<h3 id="事务隔离（Isolation-Level）"><a href="#事务隔离（Isolation-Level）" class="headerlink" title="事务隔离（Isolation Level）"></a>事务隔离（Isolation Level）</h3><p>事务隔离意味着对于某个运行着的事务来说，类似于系统中只有一个事物，其他并发事务都不存在一样<br>大部分情况下很少使用安全隔离的事务，但是不完全隔离的事务会带来如下问题：<br><strong>更新丢失（Lost Update）：</strong> 两个事务都企图去更新一行数据，导致事务抛出异常退出。<br><strong>脏数据（Dirty Read）：</strong> 如果第二个应用程序使用了第一个应用程序修改过的数据，而这个数据处于未提交状态，这时就会发生脏读。第一个应用程序随后可能会请求回滚被修改的数据，从而导致第二个事务使用的数据被损坏，即所谓的“变脏”。<br><strong>不可重读（Unrepeatable Read）：</strong> 一个事务两次读同一行数据，可是这两次读到的数据不一样，就叫不可重读。如果一个事务在提交数据之前，另一个事务可以修改和删除这些数据，就会发生不可重读。<br><strong>幻读（Phantom Read）：</strong> 一个事务执行了两次查询，发现第二次查询结果比第一次查询多出了一行，这可能是因为另一个事务在这两次查询之间插入了新行。  </p>
+<h4 id="那么为了避免此类问题，提供出了以下隔离级别来防范"><a href="#那么为了避免此类问题，提供出了以下隔离级别来防范" class="headerlink" title="那么为了避免此类问题，提供出了以下隔离级别来防范:"></a>那么为了避免此类问题，提供出了以下隔离级别来防范:</h4><p><strong>读操作未提交（Read Uncommitted）：</strong> 读取未提交的数据是允许的。说明一个事务在提交前，其变化对于其他事务来说是可见的。这样脏读、不可重读和幻读都是允许的。当一个事务已经写入一行数据但未提交，其他事务都不能再写入此行数据；但是，任何事务都可以读任何数据。这个隔离级别使用排写锁实现。<br><strong>读操作已提交（Read Committed）：</strong> 读取未提交的数据是不允许的，它使用临时的共读锁和排写锁实现。这种隔离级别不允许脏读，但不可重读和幻读是允许的。<br><strong>可重读（Repeatable Read）：</strong> 说明事务保证能够再次读取相同的数据而不会失败。此隔离级别不允许脏读和不可重读，但幻读会出现。<br><strong>可串行化（Serializable）：</strong> 提供最严格的事务隔离。这个隔离级别不允许事务并行执行，只允许串行执行。这样，脏读、不可重读或幻读都可发生。  </p>
+<h3 id="事务隔离与隔离级别的关系："><a href="#事务隔离与隔离级别的关系：" class="headerlink" title="事务隔离与隔离级别的关系："></a>事务隔离与隔离级别的关系：</h3><table>
+<thead>
+<tr>
+<th align="left">隔离级别</th>
+<th align="left">脏读（Dirty Read）</th>
+<th align="left">不可重读（Unrepeatable read）</th>
+<th align="left">幻读（Phantom Read）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">读操作未提交（Read Uncommitted）</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">读操作已提交（Read Committed）</td>
+<td align="left">不可能</td>
+<td align="left">可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">可重读（Repeatable Read）</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+<td align="left">可能</td>
+</tr>
+<tr>
+<td align="left">可串行化（Serializable）</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+<td align="left">不可能</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h3 id="事务的传播（Propagation）"><a href="#事务的传播（Propagation）" class="headerlink" title="事务的传播（Propagation）"></a>事务的传播（Propagation）</h3><table>
+<thead>
+<tr>
+<th align="left">事务传播行为类型</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PROPAGATION_REQUIRED</td>
+<td align="left">如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是 最常见的选择。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_SUPPORTS</td>
+<td align="left">支持当前事务，如果当前没有事务，就以非事务方式执行。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_MANDATORY</td>
+<td align="left">使用当前的事务，如果当前没有事务，就抛出异常。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_REQUIRES_NEW</td>
+<td align="left">新建事务，如果当前存在事务，把当前事务挂起。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NOT_SUPPORTED</td>
+<td align="left">以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NEVER</td>
+<td align="left">以非事务方式执行，如果当前存在事务，则抛出异常。</td>
+</tr>
+<tr>
+<td align="left">PROPAGATION_NESTED</td>
+<td align="left">如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与 PROPAGATION_REQUIRED 类似的操作。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p><strong>readOnly</strong> 事务属性中的readOnly标志表示对应的事务应该被最优化为只读事务。这是一个最优化提示 。在一些情况下，一些事务策略能够起到显著的最优化效果，例如在使用Object/Relational映射工具 （如：Hibernate或TopLink）时避免dirty checking（试图“刷新”）。<br><strong>Timeout</strong> 在事务属性中还有定义“timeout”值的选项，指定事务超时为几秒。在JTA中，这将被简单地传递到J2EE服务器的事务协调程序，并据此得到相应的解释。  </p>
+<h3 id="事务的嵌套"><a href="#事务的嵌套" class="headerlink" title="事务的嵌套"></a>事务的嵌套</h3><ol>
+<li><strong>PROPAGATION_REQUIRED</strong> 加入当前正要执行的事务不在另外一个事务里，那么就起一个新的事务。即，如果存在主事务，则将此事务合并到主事务中，提交和回滚与主事务依赖，不存在主事务则会自起事务。</li>
+<li><strong>PROPAGATION_SUPPORTS</strong> 如果当前在事务中，即以事务的形式运行，如果当前不再一个事务中，那么就以非事务的形式运行。</li>
+<li><strong>PROPAGATION_MANDATORY</strong> 必须在一个事务中运行。也就是说，他只能被一个父事务调用。否则，他就要抛出异常</li>
+<li><strong>PROPAGATION_REQUIRES_NEW</strong> 在主事务中，创建一个新的事务（子事务）并挂起主事务，执行完子事务后，主事务继续执行，但是，如果子事务已经提交，当主事务失败回滚时，子事务是不回滚的</li>
+<li><strong>PROPAGATION_NOT_SUPPORTED</strong> 当前不支持事务，当存在事务中时，会将主事务挂起，当以非事务状态执行完后在继续执行主事务</li>
+<li><strong>PROPAGATION_NEVER</strong> 不能在事务中运行，否则抛异常。</li>
+<li><strong>PROPAGATION_NESTED</strong> 它与PROPAGATION_REQUIRES_NEW的区别是，不另起事务，与主事务相依，而且需要等主事务提交时才会提交，主事务回滚它也回滚。</li>
+</ol>
+<h3 id="Spring事务处理"><a href="#Spring事务处理" class="headerlink" title="Spring事务处理"></a>Spring事务处理</h3><p> Spring配置文件中关于事务配置总是由三个组成部分，分别是DataSource、TransactionManager和代理机制这三部分，无论哪种配置方式，一般变化的只是代理机制这部分。<br> Spring处理事务主要有五种方法：</p>
+<ol>
+<li>每个bin都有一个代理</li>
+<li>所有bin共享一个代理基类</li>
+<li>使用拦截器</li>
+<li>使用tx标签配置的拦截器</li>
+<li>全注解<br>此处只简单介绍全注解：<br>在配置好数据库配置后，需要 <em>定义事务管理器</em>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id&#x3D;&quot;transactionManager&quot;</span><br><span class="line">        class&#x3D;&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">    &lt;property name&#x3D;&quot;dataSource&quot; ref&#x3D;&quot;datasource&quot;&#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;bean&gt;</span><br></pre></td></tr></table></figure>
+然后在需要事务的方法上添加 @Transactional 注解。  </li>
+</ol>
+<h3 id="Transactional"><a href="#Transactional" class="headerlink" title="@Transactional"></a>@Transactional</h3><h4 id="Transactional的含义"><a href="#Transactional的含义" class="headerlink" title="@Transactional的含义"></a>@Transactional的含义</h4><p>关键点之一是要考虑两个独立的概念，它们都有各自的范围和生命周期：  </p>
+<ul>
+<li>persistence context(持久化上下文)</li>
+<li>database transaction（事务）<br>@Transactional本身定义了单个事务的范围。这个事务在persistence context的范围内。<br>JPA中的持久化上下文是EntityManager，内部实现使用了Hibernate Session（使用Hibernate作为持久化provider）<br>持久化上下文仅仅是一个同步对象，它记录了有限集合的Java对象的状态，并且保证这些对象的变化最终持久化到数据库。<br>这是与单个事务非常不同的概念。一个Entity Manager可以跨越多个事务使用，而且的确是这样使用的。  <h4 id="EntityManager和Transaction之间的关系"><a href="#EntityManager和Transaction之间的关系" class="headerlink" title="EntityManager和Transaction之间的关系:"></a>EntityManager和Transaction之间的关系:</h4>JPA Entity Manager最常用的方式是“Entity Manager per application transaction”(每个事务都有自己的实体管理器)模式。entity manager注入的常用方法是：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@PersistenceContext</span><br><span class="line">private EntityManager em;</span><br></pre></td></tr></table></figure>
+这里默认为“Entity Manager per transaction”模式。这种模式下如果在@Transactional方法内部使用该Entity Manager，那么该方法将在单一事务中运行。  </li>
+</ul>
+<h4 id="PersistenceContext的工作原理"><a href="#PersistenceContext的工作原理" class="headerlink" title="@PersistenceContext的工作原理"></a>@PersistenceContext的工作原理</h4><p>随之而来的问题就是@PersistenceContext如何仅在容器启动时注入entity manager，假定entity manager生命周期很短暂，而且每次请求需要多个entity manager。<br>答案是它不能：EntityManager是一个接口，注入到spring bean中的不是entity manager本身，而是在运行时代理具体entity manager的context aware proxy（上下文感知代理）。<br>通常用于代理的具体类为SharedEntityManagerInvocationHandler，借助调试器可以确认这一点。  </p>
+<h4 id="Transactional如何工作的"><a href="#Transactional如何工作的" class="headerlink" title="@Transactional如何工作的"></a>@Transactional如何工作的</h4><p>实现了EntityManager接口的持久化上下文代理并不是声明式事务管理的唯一部分，事实上包含三个组成部分：</p>
+<ul>
+<li>EntityManager Proxy本身</li>
+<li>事务的切面</li>
+<li>事务管理器  <h5 id="事务的切面："><a href="#事务的切面：" class="headerlink" title="事务的切面："></a>事务的切面：</h5>事务的切面是一个“around（环绕）”切面，在注解的业务方法前后都可以被调用。实现切面的具体类是TransactionInterceptor。<br>事务的切面有两个主要职责：  </li>
+<li>在’before’时，切面提供一个调用点，来决定被调用业务方法应该在正在进行事务的范围内运行，还是开始一个新的独立事务。  </li>
+<li>在’after’时，切面需要确定事务被提交，回滚或者继续运行。  </li>
+<li>在’before’时，事务切面自身不包含任何决策逻辑，是否开始新事务的决策委派给事务管理器完成。</li>
+</ul>
+<h5 id="事务管理器："><a href="#事务管理器：" class="headerlink" title="事务管理器："></a>事务管理器：</h5><p>事务管理器需要解决下面两个问题：    </p>
+<ul>
+<li>新的Entity Manager是否应该被创建？</li>
+<li>是否应该开始新的事务？  </li>
+</ul>
+<p>这些需要事务切面’before’逻辑被调用时决定。事务管理器的决策基于以下两点：  </p>
+<ul>
+<li>事务是否正在进行</li>
+<li>事务方法的propagation属性（比如REQUIRES_NEW总要开始新事务）  </li>
+</ul>
+<p>如果事务管理器确定要创建新事务，那么将：  </p>
+<ul>
+<li>创建一个新的entity manager</li>
+<li>entity manager绑定到当前线程</li>
+<li>从数据库连接池中获取连接</li>
+<li>将连接绑定到当前线程  </li>
+</ul>
+<blockquote>
+<p>摘自：<a href="https://www.cnblogs.com/mxmbk/p/5341258.html" target="_blank" rel="noopener">https://www.cnblogs.com/mxmbk/p/5341258.html</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/16/shell/shell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1663,534 +2167,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/java/grpc_java/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaohua Dong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="隔壁董小花同学">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/21/java/grpc_java/" itemprop="url">GRPC</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:57+08:00">
-                2018-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="官方文档：http-grpc-mydoc-io"><a href="#官方文档：http-grpc-mydoc-io" class="headerlink" title="官方文档：http://grpc.mydoc.io/"></a>官方文档：<a href="http://grpc.mydoc.io/" target="_blank" rel="noopener">http://grpc.mydoc.io/</a></h4><h3 id="proto文件："><a href="#proto文件：" class="headerlink" title="proto文件："></a>proto文件：</h3><pre>
-syntax = "proto3";
-
-//以外部类模式生成
-option java_multiple_files = true;
-//所在包名
-option java_package = "cn.dxh.practice";
-//最外层类名称
-option java_outer_classname = "PracticeService";
-
-// 定义服务
-service UserService {
-    //按id查询数据
-    rpc FindById (FindByIdRequest) returns (FindByIdResponse) {
-    }
-
-    //服务器端流式 RPC
-    //    客户端发送一个请求给服务端，可获取一个数据流用来读取一系列消息。客户端从返回的数据流里一直读取直到没有更多消息为止。
-    //    通过在 响应 类型前插入 stream 关键字，可以指定一个服务器端的流方法。
-    //查询所有符合条件的数据
-    rpc FindByAge (FindByAgeRequest) returns (stream UserEntity) {
-    }
-
-    //客户端流式 RPC
-    //    即客户端用提供的一个数据流写入并发送一系列消息给服务端。
-    //    客户端写入一个消息序列并将其发送到服务器，同样也是使用流。一旦客户端完成消息写入，就等待服务端读取这些消息并返回应答。
-    //    通过在 请求 类型前指定 stream 关键字来指定一个客户端的流方法。
-    //删除数据
-    rpc DeleteById (DeletedByIdRequest) returns (DeletedByIdResponse) {
-    }
-
-    //双向流式 RPC
-    //    即两边都可以分别通过一个读写数据流来发送一系列消息。这两个数据流操作是相互独立的，所以客户端和服务端能按其希望的任意顺序读写，
-    //    例如：服务端可以在写应答前等待所有的客户端消息，或者它可以先读一个消息再写一个消息，或者是读写相结合的其他方式。每个数据流里消息的顺序会被保持。
-    //通过在请求和响应前加 stream 关键字去制定方法的类型。
-    rpc FindByName (stream FindByNameRequest) returns (stream UserEntity) {
-    }
-}
-
-//按id查询数据参数
-message FindByIdRequest {
-    int64 id = 1;
-}
-//按id查询数据返回结果
-message FindByIdResponse {
-    string name = 2;
-    int32 age = 3;
-}
-//查询语句的条件参数
-message FindByAgeRequest {
-    int32 age = 1;
-}
-
-//删除数据的参数
-message DeletedByIdRequest {
-    int64 id = 1;
-}
-
-//删除数据的返回结果
-message DeletedByIdResponse {
-}
-
-//参数
-message FindByNameRequest {
-}
-
-//实例
-message UserEntity {
-    int64 id = 1;
-    string name = 2;
-    int32 age = 3;
-    string from = 4;
-    string pwd = 5;
-}
-
-</pre>
-
-<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><h4 id="编写serviceImpl类"><a href="#编写serviceImpl类" class="headerlink" title="编写serviceImpl类"></a>编写serviceImpl类</h4><p> 此类需要继承 UserServiceGrpc.UserServiceImplBase ,这个类提供了我们定义的接口，继承后并覆盖需要实现的方法。</p>
-<pre>
-@Slf4j
-@Service
-public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
-
-  @Resource
-  private UserMapper userMapper;
-
-  /**
-   * 简单rpc
-   * 其中StreamObserver<UserEntity>是一个应答观察者,用于封装返回的信息,服务器把该信息传给客户端.请求结束要调用onCompleted()方法.
-   * @param request
-   * @param responseObserver
-   */
-  @Override
-  public void findById(FindByIdRequest request, StreamObserver<UserEntity> responseObserver) {
-    try {
-      long id = request.getId();
-      userMapper.findById(id)
-      responseObserver.onNext(UserEntity.newBuilder().build());
-//      请求结束
-      responseObserver.onCompleted();
-    } catch (Exception e) {
-      log.error("findById is error");
-    }
-  }
-
-  /**
-   * 服务器端流式 RPC
-   *
-   * @param request
-   * @param responseObserver
-   */
-  @Override
-  public void findByAge(FindByAgeRequest request, StreamObserver<UserEntity> responseObserver) {
-    try {
-      int age = request.getAge();
-      List<UserEntity> userEntities = userMapper.findByAgs(age);
-      userEntities.forEach(userEntity -> responseObserver.onNext(UserEntity.newBuilder().build()));
-      responseObserver.onCompleted();
-    } catch (Exception e) {
-      log.error("");
-    }
-  }
-
-
-  /**
-   * 客户端流式 RPC
-   * 服务端就需要一直监控客户端写入情况,因此需要一个StreamObserver接口,其中onNext方法会在客户端每次写入时调用,当写入完毕时调用onCompleted()方法
-   * @param responseObserver
-   * @return
-   */
-  @Override
-  public StreamObserver<DeletedByIdRequest> deleteById(StreamObserver<DeletedByIdResponse> responseObserver) {
-    return new StreamObserver<DeletedByIdRequest>() {
-      @Override
-      public void onNext(DeletedByIdRequest deletedByIdRequest) {
-        userMapper.deletedById(deletedByIdRequest.getId());
-      }
-
-      @Override
-      public void onError(Throwable throwable) {
-        throwable.printStackTrace();
-      }
-
-      @Override
-      public void onCompleted() {
-        responseObserver.onNext(DeletedByIdResponse.newBuilder().build());
-        responseObserver.onCompleted();
-      }
-    };
-  }
-
-  /**
-   * 双向流式 RPC
-   *
-   * @param responseObserver
-   * @return
-   */
-  @Override
-  public StreamObserver<FindByNameRequest> findByName(StreamObserver<UserEntity> responseObserver) {
-    return new StreamObserver<FindByNameRequest>() {
-      @Override
-      public void onNext(FindByNameRequest findByNameRequest) {
-        userMapper.findByName(findByNameRequest.getName());
-      }
-
-      @Override
-      public void onError(Throwable throwable) {
-        throwable.printStackTrace();
-      }
-
-      @Override
-      public void onCompleted() {
-        responseObserver.onNext(UserEntity.newBuilder().build());
-        responseObserver.onCompleted();
-      }
-    };
-  }
-}
-</pre>
-
-<h4 id="创建服务端"><a href="#创建服务端" class="headerlink" title="创建服务端"></a>创建服务端</h4><pre>
-@Component
-public class GrpcService {
-
-  private int port = 19090;
-  private Server server;
-
-  @Resource
-  private UserServiceGrpc.UserServiceImplBase userService;
-
-  @PostConstruct
-  public void init() throws IOException {
-    ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true)
-                                                            .setNameFormat("grpc-server-thread-%d")
-                                                            .build();
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(10,
-                                                         100,
-                                                         60L,
-                                                         TimeUnit.SECONDS,
-                                                         new LinkedBlockingQueue<>(),
-                                                         threadFactory,
-                                                         new ThreadPoolExecutor.CallerRunsPolicy());
-    server = ServerBuilder.forPort(port)
-                          .addService(userService)
-                          .executor(executor).build();
-    server.start();
-  }
-
-  @PreDestroy
-  public void destroy() {
-    if (server != null) {
-      server.shutdown();
-    }
-  }
-
-}
-</pre>
-
-<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/database/postgresql/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaohua Dong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="隔壁董小花同学">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/21/database/postgresql/" itemprop="url">PostgreSql</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:10+08:00">
-                2018-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="psql常用命令"><a href="#psql常用命令" class="headerlink" title="psql常用命令"></a>psql常用命令</h3><h5 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h5><p>psql -h [ip] -U [username] -d [databases]</p>
-<ul>
-<li>创建schema<br>CREATE SCHEMA my_schema;<br>GRANT ALL ON SCHEMA my_schema TO my_user;</li>
-<li>查看当前schema<br>SHOW search_path;</li>
-<li>查询数据库下所有schema<br>select * from information_schema.schemata;</li>
-<li>查询指定schema下所有表<br>select * from information_schema.tables where table_schema=’audit’;</li>
-<li>切换schema（连接级）<br>set search_path to my_schema;</li>
-<li>改变默认schema（数据库级）<br>ALTER database “my_database” SET search_path TO my_schema;</li>
-<li>指定schema查询<br>select count(*) from audit.fxk_pg_oplog;</li>
-</ul>
-<h3 id="pg基础知识与基本操作"><a href="#pg基础知识与基本操作" class="headerlink" title="pg基础知识与基本操作"></a>pg基础知识与基本操作</h3><p><span style="color:red">查询pg库的所有表名称</span><br>select tablename from pg_tables where schemaname=’public’;<br><span style="color:red">获取pg表的字段</span><br>select column_name from information_schema.columns<br>where table_name = ‘db_job’;</p>
-<p><span style="color:red">–查看当前活动的客户端连接数</span><br> SELECT count(*) FROM pg_stat_activity WHERE NOT pid=pg_backend_pid();<br><span style="color:red">–查看PostgreSQL正在执行的SQL</span><br>SELECT<br>    procpid,<br>    start,<br>    now() - start AS lap,<br>    current_query<br>FROM<br>    (SELECT<br>        backendid,<br>        pg_stat_get_backend_pid(S.backendid) AS procpid,<br>        pg_stat_get_backend_activity_start(S.backendid) AS start,<br>       pg_stat_get_backend_activity(S.backendid) AS current_query<br>    FROM<br>        (SELECT pg_stat_get_backend_idset() AS backendid) AS S<br>    ) AS S ,pg_stat_activity pa<br>WHERE<br>   current_query &lt;&gt; ‘<IDLE>‘ and  procpid&lt;&gt; pg_backend_pid() and pa.pid=s.procpid and pa.state&lt;&gt;’idle’<br>ORDER BY<br>   lap DESC;<br><span style="color:red">–查看当前库表和索引的的大小并排序显示前20条</span><br>SELECT<br>nspname,<br>relname,<br>relkind as “type”,<br>pg_size_pretty(pg_table_size(C.oid)) AS size,<br>pg_size_pretty(pg_indexes_size(C.oid)) AS idxsize,<br>pg_size_pretty(pg_total_relation_size(C.oid)) as “total”<br>FROM pg_class C<br>LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)<br>WHERE nspname NOT IN (‘pg_catalog’, ‘information_schema’) AND<br>nspname !~ ‘^pg_toast’ AND<br>relkind IN (‘r’,’i’)<br>ORDER BY pg_total_relation_size(C.oid) DESC<br>LIMIT 20; </p>
-<span style="color:blue">
-procpid：进程id  
-start：进程开始时间  
-lap：经过时间  
-current_query：执行中的sql  
-怎样停止正在执行的sql  
-SELECT pg_cancel_backend(进程id);  
-或者用系统函数  
-kill -9 进程id;
---查找是否有waiting  
-ps -ef|grep postgres | grep wait
-</span>
-
-<p>排序：ORDER BY 字段 DESC<br><span style="color:red">模糊不区分大小写查询：</span>UPPER(字段) LIKE UPPER(‘%${search}%’)<br><span style="color:red">查指定条数：</span>LIMIT 长度 OFFSET 起始位置</p>
-<p>关联查询：<br>SELECT fail_count<br>FROM test_report AS  f<br>INNER JOIN(SELECT MAX(id) AS b_id FROM test_build WHERE job_id = #{jobId})  r<br>ON f.build_id = r.b_id</p>
-<p><span style="color:red">去重返回</span><br>SELECT <span style="color:red">DISTINCT</span><br>    T.parent_id<br>FROM<br>    db_task AS T<br>INNER JOIN db_job AS j ON T.status IN (<br>    ‘running’,<br>    ‘initComplete’,<br>    ‘fail’<br>)<br>AND j.status IN (‘created’, ‘dispatched’)</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2241,7 +2217,7 @@ ps -ef|grep postgres | grep wait
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2252,7 +2228,7 @@ ps -ef|grep postgres | grep wait
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">分类</span>
                 
               </div>
@@ -2263,7 +2239,7 @@ ps -ef|grep postgres | grep wait
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
