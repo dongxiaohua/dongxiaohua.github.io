@@ -1791,6 +1791,13 @@
 <li><p>命令格式<br>jmap [ option ] pid<br>jmap [ option ] executable core<br>jmap [ option ] [server-id@]remote-hostname-or-IP<br>参数说明<br>options：<br>executable :产生core dump的java可执行程序;<br>core 将被打印信息的core dump文件;<br>remote-hostname-or-IP 远程debug服务的主机名或ip;<br>server-id 唯一id,假如一台主机上多个远程debug服务;  </p>
 </li>
 <li><p>dump 文件分析<br>导出整个JVM 中内存信息： jmap -dump:format=b,file=文件名.dump [pid]</p>
+<ul>
+<li>将文件远程复制</li>
+</ul>
+<ol>
+<li>将本地文件复制到远程： scp tl.out <a href="mailto:root@47.104.229.246">root@47.104.229.246</a>:/tl.out</li>
+<li>将远程文件复制到本地： scp <a href="mailto:root@47.104.229.246">root@47.104.229.246</a>:/root/tl.out tl.out</li>
+</ol>
 </li>
 </ul>
 
