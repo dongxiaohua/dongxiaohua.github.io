@@ -258,6 +258,398 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/java/cron_java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/20/java/cron_java/" itemprop="url">cron基础用法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T19:01:08+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在线Cron表达式生成器 : <a href="http://cron.qqe2.com/" target="_blank" rel="noopener">http://cron.qqe2.com/</a></p>
+<p>（1）<span style="color:red">*</span>：表示匹配该域的任意值。假如在Minutes域使用<em>, 即表示每分钟都会触发事件。<br>（2）<span style="color:red">?</span>：只能用在DayofMonth和DayofWeek两个域。它也匹配域的任意值，但实际不会。因为DayofMonth和DayofWeek会相互影响。例如想在每月的20日触发调度，不管20日到底是星期几，则只能使用如下写法： 13 13 15 20 * ?, 其中最后一位只能用？，而不能使用</em>，如果使用*表示不管星期几都会触发，实际上并不是这样。<br>（3）<span style="color:red">-</span>：表示范围。例如在Minutes域使用5-20，表示从5分到20分钟每分钟触发一次<br>（4）<span style="color:red">/</span>：表示起始时间开始触发，然后每隔固定时间触发一次。例如在Minutes域使用5/20,则意味着5分钟触发一次，而25，45等分别触发一次.<br>（5）<span style="color:red">,</span>：表示列出枚举值。例如：在Minutes域使用5,20，则意味着在5和20分每分钟触发一次。<br>（6）<span style="color:red">L</span>：表示最后，只能出现在DayofWeek和DayofMonth域。如果在DayofWeek域使用5L,意味着在最后的一个星期四触发。<br>（7）<span style="color:red">W</span>:表示有效工作日(周一到周五),只能出现在DayofMonth域，系统将在离指定日期的最近的有效工作日触发事件。例如：在 DayofMonth使用5W，如果5日是星期六，则将在最近的工作日：星期五，即4日触发。如果5日是星期天，则在6日(周一)触发；如果5日在星期一到星期五中的一天，则就在5日触发。另外一点，W的最近寻找不会跨过月份 。<br>（8）<span style="color:red">LW</span>:这两个字符可以连用，表示在某个月最后一个工作日，即最后一个星期五。<br>（9）<span style="color:red">#</span> :用于确定每个月第几个星期几，只能出现在DayofMonth域。例如在4#2，表示某月的第二个星期三。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/19/es/es_basics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/19/es/es_basics/" itemprop="url">ES基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-19T17:10:58+08:00">
+                2018-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="RestHighLevelClient-6-5"><a href="#RestHighLevelClient-6-5" class="headerlink" title="RestHighLevelClient(6.5)"></a>RestHighLevelClient(6.5)</h3><p>官网：<a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/6.5/java-rest-low-usage-initialization.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/client/java-rest/6.5/java-rest-low-usage-initialization.html</a></p>
+<p>一 <br><br>RestClient实例可以通过相应的建立 RestClientBuilder的类，通过创建RestClient#builder(HttpHost…) 静态方法。唯一必需的参数是客户端将与之通信的一个或多个主机，作为HttpHost的实例提供 </p>
+<pre>
+RestClient restClient = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"),
+    new HttpHost("localhost", 9201, "http")).build();
+</pre>
+<p>该RestClient班是线程安全的，理想情况下具有相同的生命周期为使用它的应用程序。重要的是它在不再需要时关闭，以便它使用的所有资源得到正确释放，以及底层的http客户端实例及其线程：</p>
+<pre>
+restClient.close();
+</pre>
+<p>二 <br><br>RestClientBuilder还允许在构建RestClient实例时可选地设置以下配置参数：</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"));
+Header[] defaultHeaders = new Header[]{new BasicHeader("header", "value")};
+builder.setDefaultHeaders(defaultHeaders);
+</pre>
+<p>设置需要随每个请求一起发送的默认标头，以防止必须为每个请求指定它们</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"));
+builder.setMaxRetryTimeoutMillis(10000);
+</pre>
+
+<p>设置在多次尝试同一请求时应该遵守的超时。默认值为30秒，与默认套接字超时相同。如果自定义套接字超时，则应相应地调整最大重试超时</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+        new HttpHost("localhost", 9200, "http"));
+builder.setFailureListener(new RestClient.FailureListener() {
+    @Override
+    public void onFailure(Node node) {
+
+    }
+});
+</pre>
+<p>设置一个侦听器，每次节点出现故障时都会收到通知，以防需要采取措施。启用嗅探失败时在内部使用。</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+    new HttpHost("localhost", 9200, "http"));
+builder.setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS);
+</pre>
+<p>设置节点选择器以用于过滤客户端将请求发送到客户端本身的节点之间的节点。这有助于防止在启用嗅探时向专用主节点发送请求。默认情况下，客户端向每个配置的节点发送请求。</p>
+<pre>
+RestClientBuilder builder = RestClient.builder(
+        new HttpHost("localhost", 9200, "http"));
+builder.setRequestConfigCallback(
+    new RestClientBuilder.RequestConfigCallback() {
+        @Override
+        public RequestConfig.Builder customizeRequestConfig(
+                RequestConfig.Builder requestConfigBuilder) {
+            return requestConfigBuilder.setSocketTimeout(10000); 
+        }
+    });
+</pre>
+
+
+<p>设置允许修改默认请求配置的回调（例如，请求超时，身份验证或org.apache.http.client.config.RequestConfig.Builder 允许设置的任何内容 ）</p>
+<pre>
+RestClientBuilder builder = RestClient.builder（
+    new HttpHost（“localhost”，9200，“http”））; 
+builder.setHttpClientConfigCallback（new HttpClientConfigCallback（）{ 
+        @ 
+        Override public HttpAsyncClientBuilder customizeHttpClient（
+                HttpAsyncClientBuilder httpClientBuilder）{ 
+            return httpClientBuilder.setProxy（
+                new HttpHost（“proxy”，9000，“http”））;  
+        } 
+    };
+</pre>
+
+<h4 id="java-使用RestHighLevelClient"><a href="#java-使用RestHighLevelClient" class="headerlink" title="java 使用RestHighLevelClient"></a>java 使用RestHighLevelClient</h4><pre>
+SearchSourceBuilder ssb = new SearchSourceBuilder()
+ssb.size(100)
+//构建搜索的query语句
+ssb.query(<span style="color:red">createQuery()</span>)
+//设置返回字段包含和不包含哪些字段，可为null
+ssb.fetchSource(new String[],new String[])
+//设置超时时间
+ssb.timeout(new TimeValue(15,TimeUnit.SECONDS))
+
+//定义参数
+SearchRequest sr = new SearchRequest(<span style="color:red">getIndex()</span>).routing(queryParam.tenantId)
+sr.source(ssb)
+
+//执行获取结果
+SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
+</pre>
+
+
+<h3 id="Es基本操作"><a href="#Es基本操作" class="headerlink" title="Es基本操作"></a>Es基本操作</h3><p><span style="color:red">index</span>（索引）<br>相当于mysql中的数据库<br><span style="color:red">type</span>（类型）<br>相当于mysql中的一张表 (7.x后只有_doc)<br><span style="color:red">document</span>（文档）<br>相当于mysql中的一行（一条记录）<br><span style="color:red">field</span>（域）<br>相当于mysql中的一列（一个字段）<br><span style="color:red">节点</span><br>一个服务器，由一个名字来标识<br><span style="color:red">集群</span><br>一个或多个节点组织在一起<br><span style="color:red">分片</span><br>将一份数据划分为多小份的能力，允许水平分割和扩展容量。多个分片可以响应请求，提高性能和吞吐量</p>
+<p>创建一个索引（即创建数据库）：（index_name为索引的名称）<br>PUT index_name<br>{<br>“settings” : {<br>“number_of_shards” : 5,<br>“number_of_replicas” : 1<br>}<br>}</p>
+<p><span style="color:red">查看索引信息：</span>（即查看数据库）<br>GET index_name</p>
+<p>GET index_name/_settings</p>
+<p><span style="color:red">查看映射</span><br>GET index_name/_mapping</p>
+<p><span style="color:red">设置映射：</span>(即设置字段类型)<br>PUT index_name<br>{<br>“mappings” : {<br>“type_name” : {<br>“properties” : {<br>“field_name1” : {<br>“type” : “keyword”<br>},<br>“field_name2” : {<br>“type” : “integet”<br>},<br>“field_name3” : {<br>“type” : “text”,<br>“analyzer” : “ik_max_word”<br>}<br>}<br>}<br>}<br>}</p>
+<p><span style="color:red">插入文档：</span>（即插入一条数据）<br>可以指定文档id<br>PUT index_name/type_name/id   （相当于PUT 数据库名/表名/id）<br> 也可以不指定id<br>POST index_name/type_name</p>
+<p><span style="color:red">查看文档：</span><br>GET index_name/type_name/id<br>查看_source中的部分字段：<br>GET index_name/type_name/id?_source=field1,field2</p>
+<p><span style="color:red">修改文档：</span><br>1.一种是通过PUT的全覆盖方式，旧数据将被删除，以新的代替<br>PUT index_name/type_name/id<br>2.另一种是通过POST方式，只对部分字段进行修改.<br>POST index_name/type_name/id/_update<br>{<br>“doc” : {<br>“field_name” : “ “<br>}<br>}</p>
+<p><span style="color:red">删除文档：</span><br>DELETE index_name/type_name/id</p>
+<p>###安装es<br>gitHub:<br><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="noopener">https://github.com/elastic/elasticsearch</a></p>
+<p>@PostConstruct和@PreDestroy这两个作用于Servlet生命周期的注解，实现Bean初始化之前和销毁之前的自定义操作</p>
+<p><span style="color:red">下载并解压</span><br>$ wget <a href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.zip" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.1.zip</a><br>$ unzip elasticsearch-5.5.1.zip<br>$ cd elasticsearch-5.5.1/<br><span style="color:red">启动</span>    ./bin/elasticsearch<br>第一次启动时内存不够，将config中jvm.options中的<br>-Xms512M<br>-Xmx512M</p>
+<p>由于需要修改磁盘，所以不能用root用户启动，需要新建用户<br><span style="color:red">创建新用户并赋权限</span><br>第一步：liunx创建新用户  adduser XXX    然后给创建的用户加密码 passwd XXX    输入两次密码。<br>第二步：切换刚才创建的用户 su XXX  然后执行elasticsearch  会显示Permission denied 权限不足。<br>第四步：root给XXX赋权限，chown -R XXX /你的elasticsearch安装目录。</p>
+<p><span style="color:red">查看当前节点的所有索引(index)</span><br>curl -X GET ‘<a href="http://localhost:9200/_cat/indices?v" target="_blank" rel="noopener">http://localhost:9200/_cat/indices?v</a><br><span style="color:red">列出每个 Index 所包含的 Type</span><br>curl ‘localhost:9200/_mapping?pretty=true’</p>
+<p>curl -<REST Verb> <Node>:<Port>/<Index>/<Type><ID></p>
+<p><span style="color:red">创建索引：</span><br>curl -XPUT ‘localhost:9200/dxh?pretty’<br>将一个信息索引到dxh下的ljf类型中，这个文档的id为1：<br>curl -XPUT ‘localhost:9200/dxh/ljf/1?pretty’ -d ‘{ “name”:”dongxiaohua” }’<br><span style="color:red">获取文档：</span></p>
+<h3 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h3><p><span style="color:red">按文档数量降序列出所有文档信息</span><br>GET /_cat/indices?v&amp;s=docs.count:desc<br><span style="color:red">按文档大小降序列出index</span><br>GET /_cat/indices?v&amp;h=i,tm&amp;s=tm:desc</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/19/basics/web/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -441,7 +833,7 @@
               
                 <a href="/archives/%7C%7Carchive">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -452,7 +844,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
