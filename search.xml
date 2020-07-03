@@ -195,7 +195,7 @@ ps -ef|grep postgres | grep wait
 <p>（1）<span style="color:red">*</span>：表示匹配该域的任意值。假如在Minutes域使用<em>, 即表示每分钟都会触发事件。<br>（2）<span style="color:red">?</span>：只能用在DayofMonth和DayofWeek两个域。它也匹配域的任意值，但实际不会。因为DayofMonth和DayofWeek会相互影响。例如想在每月的20日触发调度，不管20日到底是星期几，则只能使用如下写法： 13 13 15 20 * ?, 其中最后一位只能用？，而不能使用</em>，如果使用*表示不管星期几都会触发，实际上并不是这样。<br>（3）<span style="color:red">-</span>：表示范围。例如在Minutes域使用5-20，表示从5分到20分钟每分钟触发一次<br>（4）<span style="color:red">/</span>：表示起始时间开始触发，然后每隔固定时间触发一次。例如在Minutes域使用5/20,则意味着5分钟触发一次，而25，45等分别触发一次.<br>（5）<span style="color:red">,</span>：表示列出枚举值。例如：在Minutes域使用5,20，则意味着在5和20分每分钟触发一次。<br>（6）<span style="color:red">L</span>：表示最后，只能出现在DayofWeek和DayofMonth域。如果在DayofWeek域使用5L,意味着在最后的一个星期四触发。<br>（7）<span style="color:red">W</span>:表示有效工作日(周一到周五),只能出现在DayofMonth域，系统将在离指定日期的最近的有效工作日触发事件。例如：在 DayofMonth使用5W，如果5日是星期六，则将在最近的工作日：星期五，即4日触发。如果5日是星期天，则在6日(周一)触发；如果5日在星期一到星期五中的一天，则就在5日触发。另外一点，W的最近寻找不会跨过月份 。<br>（8）<span style="color:red">LW</span>:这两个字符可以连用，表示在某个月最后一个工作日，即最后一个星期五。<br>（9）<span style="color:red">#</span> :用于确定每个月第几个星期几，只能出现在DayofMonth域。例如在4#2，表示某月的第二个星期三。</p>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
         <tag>cron</tag>
@@ -330,7 +330,7 @@ ps -ef|grep postgres | grep wait
 </blockquote>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
         <tag>hashMap</tag>
@@ -366,7 +366,7 @@ public @interface GetLog {
 </pre>
 
 <p>根据我们介绍的Annotation是否可以包含成员变量，我们可以把Annotation分为如下两类：<br><br>标记Annotation： 一个没有成员定义的Annotation类型被称为标记。这种Annotation仅使用自身的存在与否来为我们提供信息。如前面介绍的@Override。<br><br>元数据Annotation：那些包含成员变量的Annotation，因为它们可接受更多元数据，所以也被称为元数据Annotation。<br></p>
-<p><b>提取Annotation信息</b><br>Java使用Annotation接口来代表程序元素前面的注释（反射的时候用它来接收注解对象），该接口是所有Annotation类型的父接口;<br><br>Java在java.lang.reflect包下新增了AnnotateElement接口，该接口代表程序中可以接受注释的程序元素，该接口主要有如下几个实现类（注意以下是类: <br><br>Class：类定义。<br><br>Constructor：构造器定义。<br><br>Field：类的成员变量定义。<br><br>Method：类的方法定义。<br><br>Package：类的包定义。<br><br>java.lang.reflect包下主要包含一些实现反射功能工具类，实际上，java.lang.reflect包提供的反射API扩充了读取运行时Annotation的能力。当一个Annotation类型被定义为运行时Annotation后，该注解才是运行时可见，当class文件被装载时被保存在class文件中的Annotation才会被虚拟机读取。<br><br>AnnotatedElement接口是所有程序元素（如Class、Method、Constructor）的父接口，所以程序通过反射获取了某个类的AnnotatedElement对象（如Class、Method、Constructor）之后，程序就可以调用该对象的如下三个方法来访问Annotation信息：<br><br>getAnnotation(Class<T> annotationClass);  //返回该程序元素上存在的、指定类型的注释，如果该类型的注释不存在，则返回null。<br><br>Annotation[] getAnnotations();      //返回该程序元素上存在的所有注释。<br><br>boolean isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass);      //判断该程序元素上是否包含指定类型的注解，存在则返回true，否则返回false。<br></p>
+<p><b>提取Annotation信息</b><br>Java使用Annotation接口来代表程序元素前面的注释（反射的时候用它来接收注解对象），该接口是所有Annotation类型的父接口;<br><br>Java在java.lang.reflect包下新增了AnnotateElement接口，该接口代表程序中可以接受注释的程序元素，该接口主要有如下几个实现类（注意以下是类: <br><br>Class：类定义。<br><br>Constructor：构造器定义。<br><br>Field：类的成员变量定义。<br><br>Method：类的方法定义。<br><br>Package：类的包定义。<br><br>java.lang.reflect包下主要包含一些实现反射功能工具类，实际上，java.lang.reflect包提供的反射API扩充了读取运行时Annotation的能力。当一个Annotation类型被定义为运行时Annotation后，该注解才是运行时可见，当class文件被装载时被保存在class文件中的Annotation才会被虚拟机读取。<br><br>AnnotatedElement接口是所有程序元素（如Class、Method、Constructor）的父接口，所以程序通过反射获取了某个类的AnnotatedElement对象（如Class、Method、Constructor）之后，程序就可以调用该对象的如下三个方法来访问Annotation信息：<br><br>getAnnotation(Class<T> annotationClass);  //返回该程序元素上存在的、指定类型的注释，如果该类型的注释不存在，则返回null。<br><br>Annotation[] getAnnotations();      //返回该程序元素上存在的所有注释。<br><br>boolean isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass);      //判断该程序元素上是否包含指定类型的注解，存在则返回true，否则返回false。<br></T></p>
 <pre>
 //@Retention注解指定GetLog注解保留多久
 @Retention(RetentionPolicy.RUNTIME)
@@ -403,9 +403,9 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
 ### AOP
 
 ### 动态代理
-]]></content>
+</pre></pre>]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
         <tag>aop annotation</tag>
@@ -592,7 +592,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
     };
   }
 }
-</pre>
+</FindByNameRequest></UserEntity></FindByNameRequest></DeletedByIdRequest></DeletedByIdResponse></DeletedByIdRequest></UserEntity></UserEntity></UserEntity></UserEntity></pre>
 
 <h4 id="创建服务端"><a href="#创建服务端" class="headerlink" title="创建服务端"></a>创建服务端</h4><pre>
 @Component
@@ -634,7 +634,7 @@ public class GrpcService {
 
 <h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3>]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
         <tag>rpc grpc</tag>
@@ -1386,6 +1386,32 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
       </categories>
       <tags>
         <tag>jvm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java线程内存模型</title>
+    <url>/2020/07/03/java/jmm/</url>
+    <content><![CDATA[<h4 id="内存模型图"><a href="#内存模型图" class="headerlink" title="内存模型图"></a>内存模型图</h4><p><img src="../../images/jmm.png" alt="jmm"></p>
+<ul>
+<li><p>每个线程中与主内存中的共享变量交互，是将共享变量的副本缓存在自己的工作内存的。  </p>
+</li>
+<li><p>并发编程的三大特性</p>
+</li>
+</ul>
+<ol>
+<li>可见性</li>
+<li>原子性</li>
+<li>有序性</li>
+</ol>
+<ul>
+<li>volatile 关键词<br>  保证共享变量在多线程之间的可见性和有序性，但不能保证原子性，需要借助synchronied这样的锁机制</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>jmm</tag>
       </tags>
   </entry>
 </search>

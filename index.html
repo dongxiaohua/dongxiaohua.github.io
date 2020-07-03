@@ -292,6 +292,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/03/java/jmm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/dxh.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/07/03/java/jmm/" itemprop="url">Java线程内存模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-03T18:00:41+08:00">
+                2020-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="内存模型图"><a href="#内存模型图" class="headerlink" title="内存模型图"></a>内存模型图</h4><p><img src="../../images/jmm.png" alt="jmm"></p>
+<ul>
+<li><p>每个线程中与主内存中的共享变量交互，是将共享变量的副本缓存在自己的工作内存的。  </p>
+</li>
+<li><p>并发编程的三大特性</p>
+</li>
+</ul>
+<ol>
+<li>可见性</li>
+<li>原子性</li>
+<li>有序性</li>
+</ol>
+<ul>
+<li>volatile 关键词<br>  保证共享变量在多线程之间的可见性和有序性，但不能保证原子性，需要借助synchronied这样的锁机制</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/03/jvm/jvm_basics/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -936,8 +1094,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -1931,183 +2089,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/19/database/redis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaohua Dong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/dxh.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="隔壁董小花同学">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/19/database/redis/" itemprop="url">Redis</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-19T16:08:37+08:00">
-                2019-07-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Redis命令"><a href="#Redis命令" class="headerlink" title="Redis命令"></a>Redis命令</h3><ul>
-<li>连接  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h host -p post -a pwd</span><br></pre></td></tr></table></figure>
-<h4 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h4></li>
-<li>info – 查看信息</li>
-<li>select [num] – 选择index</li>
-<li>keys * – 查看所有key</li>
-<li>SET key value – 设置指定 key 的值</li>
-<li>GET key – 获取指定 key 的值</li>
-<li>GETSET key value – 将给定 key 的值设为 value ，并返回 key 的旧值(old value)。</li>
-<li>MGET key1 [key2..] – 获取所有(一个或多个)给定 key 的值。</li>
-<li>SETEX key seconds value – 将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)。</li>
-<li>PSETEX key milliseconds value – 以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位。</li>
-<li>SETNX key value – 只有在 key 不存在时设置 key 的值。</li>
-<li>MSET key value [key value …] – 同时设置一个或多个 key-value 对。</li>
-<li>APPEND key value – 如果 key 已经存在并且是一个字符串， APPEND 命令将指定的 value 追加到该 key 原来值（value）的末尾。  </li>
-<li>DEL key – 该命令用于在 key 存在时删除 key。</li>
-<li>EXISTS key – 检查给定 key 是否存在。</li>
-<li>DUMP key – 序列化给定 key ，并返回被序列化的值</li>
-<li>PERSIST key – 移除 key 的过期时间，key 将持久保持。</li>
-<li>PTTL key – 以毫秒为单位返回 key 的剩余的过期时间</li>
-<li>RANDOMKEY – 从当前数据库中随机返回一个 key</li>
-<li>RENAME key newkey – 修改 key 的名称</li>
-<li>RENAMENX key newkey – 仅当 newkey 不存在时，将 key 改名为 newkey</li>
-<li>TYPE key – 返回 key 所储存的值的类型</li>
-</ul>
-<h4 id="pub-发布-sub-订阅"><a href="#pub-发布-sub-订阅" class="headerlink" title="pub(发布) - sub(订阅)"></a>pub(发布) - sub(订阅)</h4><p>Redis 发布订阅(pub/sub)是一种消息通信模式：发送者(pub)发送消息，订阅者(sub)接收消息。<br>Redis 客户端可以订阅任意数量的频道  </p>
-<h4 id="列表（List）"><a href="#列表（List）" class="headerlink" title="列表（List）"></a>列表（List）</h4><ul>
-<li>LLEN key  获取列表长度</li>
-<li>LPOP key  移除并获取列表第一个元素</li>
-<li>RPOP key  移除并获取列表最后一个元素</li>
-<li>LREM key count value  移除列表元素</li>
-<li>RPUSHX key value  对已存在的列表添加元素</li>
-<li>LPUSHX key value  将元素插入已存在列表头部</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2162,7 +2143,7 @@
               
                 <a href="/archives/%7C%7Carchive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2184,7 +2165,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

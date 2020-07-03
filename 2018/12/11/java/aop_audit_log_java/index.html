@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="隔壁董小花同学">
 <meta property="og:description" content="注解 AnnotationAnnotation其实是代码里的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相应的处理。通过使用Annotation，程序开发人员可以在不改变原有逻辑的情况下，在源文件嵌入一些补充信息。代码分析工具、开发工具和部署工具可以通过这些补充信息进行验证或者进行部署。 　　Annotation提供了一条为程序元素设置元数据的方法，从某些方面来看，Annotatio">
 <meta property="article:published_time" content="2018-12-11T11:27:42.626Z">
-<meta property="article:modified_time" content="2020-01-02T08:25:16.657Z">
+<meta property="article:modified_time" content="2020-07-03T10:01:18.599Z">
 <meta property="article:author" content="xiaohua Dong">
 <meta property="article:tag" content="aop annotation">
 <meta name="twitter:card" content="summary">
@@ -348,8 +348,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -412,7 +412,7 @@ public @interface GetLog {
 </pre>
 
 <p>根据我们介绍的Annotation是否可以包含成员变量，我们可以把Annotation分为如下两类：<br><br>标记Annotation： 一个没有成员定义的Annotation类型被称为标记。这种Annotation仅使用自身的存在与否来为我们提供信息。如前面介绍的@Override。<br><br>元数据Annotation：那些包含成员变量的Annotation，因为它们可接受更多元数据，所以也被称为元数据Annotation。<br></p>
-<p><b>提取Annotation信息</b><br>Java使用Annotation接口来代表程序元素前面的注释（反射的时候用它来接收注解对象），该接口是所有Annotation类型的父接口;<br><br>Java在java.lang.reflect包下新增了AnnotateElement接口，该接口代表程序中可以接受注释的程序元素，该接口主要有如下几个实现类（注意以下是类: <br><br>Class：类定义。<br><br>Constructor：构造器定义。<br><br>Field：类的成员变量定义。<br><br>Method：类的方法定义。<br><br>Package：类的包定义。<br><br>java.lang.reflect包下主要包含一些实现反射功能工具类，实际上，java.lang.reflect包提供的反射API扩充了读取运行时Annotation的能力。当一个Annotation类型被定义为运行时Annotation后，该注解才是运行时可见，当class文件被装载时被保存在class文件中的Annotation才会被虚拟机读取。<br><br>AnnotatedElement接口是所有程序元素（如Class、Method、Constructor）的父接口，所以程序通过反射获取了某个类的AnnotatedElement对象（如Class、Method、Constructor）之后，程序就可以调用该对象的如下三个方法来访问Annotation信息：<br><br>getAnnotation(Class<T> annotationClass);  //返回该程序元素上存在的、指定类型的注释，如果该类型的注释不存在，则返回null。<br><br>Annotation[] getAnnotations();      //返回该程序元素上存在的所有注释。<br><br>boolean isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass);      //判断该程序元素上是否包含指定类型的注解，存在则返回true，否则返回false。<br></p>
+<p><b>提取Annotation信息</b><br>Java使用Annotation接口来代表程序元素前面的注释（反射的时候用它来接收注解对象），该接口是所有Annotation类型的父接口;<br><br>Java在java.lang.reflect包下新增了AnnotateElement接口，该接口代表程序中可以接受注释的程序元素，该接口主要有如下几个实现类（注意以下是类: <br><br>Class：类定义。<br><br>Constructor：构造器定义。<br><br>Field：类的成员变量定义。<br><br>Method：类的方法定义。<br><br>Package：类的包定义。<br><br>java.lang.reflect包下主要包含一些实现反射功能工具类，实际上，java.lang.reflect包提供的反射API扩充了读取运行时Annotation的能力。当一个Annotation类型被定义为运行时Annotation后，该注解才是运行时可见，当class文件被装载时被保存在class文件中的Annotation才会被虚拟机读取。<br><br>AnnotatedElement接口是所有程序元素（如Class、Method、Constructor）的父接口，所以程序通过反射获取了某个类的AnnotatedElement对象（如Class、Method、Constructor）之后，程序就可以调用该对象的如下三个方法来访问Annotation信息：<br><br>getAnnotation(Class<T> annotationClass);  //返回该程序元素上存在的、指定类型的注释，如果该类型的注释不存在，则返回null。<br><br>Annotation[] getAnnotations();      //返回该程序元素上存在的所有注释。<br><br>boolean isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass);      //判断该程序元素上是否包含指定类型的注解，存在则返回true，否则返回false。<br></T></p>
 <pre>
 //@Retention注解指定GetLog注解保留多久
 @Retention(RetentionPolicy.RUNTIME)
@@ -449,7 +449,7 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
 ### AOP
 
 ### 动态代理
-
+</pre></pre>
       
     </div>
     
@@ -574,7 +574,7 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
               
                 <a href="/archives/%7C%7Carchive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -596,7 +596,7 @@ ElementType.TYPE:  指定该策略的Annotation可以修饰类、接口（包括
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
