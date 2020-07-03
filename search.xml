@@ -668,7 +668,7 @@ public class GrpcService {
 </ul>
 ]]></content>
       <categories>
-        <category>jvm</category>
+        <category>Jvm</category>
       </categories>
       <tags>
         <tag>jstack jmap jstat</tag>
@@ -1287,6 +1287,18 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
       </categories>
       <tags>
         <tag>es</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JVM虚拟机</title>
+    <url>/2020/07/03/jvm/jvm_basics/</url>
+    <content><![CDATA[<h3 id="jvm虚拟机内存模型图"><a href="#jvm虚拟机内存模型图" class="headerlink" title="jvm虚拟机内存模型图"></a>jvm虚拟机内存模型图</h3><p><img src="../../images/jvm.png" alt="jvm"></p>
+]]></content>
+      <categories>
+        <category>Jvm</category>
+      </categories>
+      <tags>
+        <tag>jvm</tag>
       </tags>
   </entry>
 </search>
