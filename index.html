@@ -384,8 +384,9 @@
 
       
         
-          
-            <h4 id="jvm虚拟机内存模型图"><a href="#jvm虚拟机内存模型图" class="headerlink" title="jvm虚拟机内存模型图"></a>jvm虚拟机内存模型图</h4><p><img src="../../images/jvm.png" alt="jvm"></p>
+          <meta name="referrer" content="no-referrer">
+
+<h4 id="jvm虚拟机内存模型图"><a href="#jvm虚拟机内存模型图" class="headerlink" title="jvm虚拟机内存模型图"></a>jvm虚拟机内存模型图</h4><p><img src="../../images/jvm.png" alt="jvm"></p>
 <h4 id="JVM虚拟机组成"><a href="#JVM虚拟机组成" class="headerlink" title="JVM虚拟机组成"></a>JVM虚拟机组成</h4><ul>
 <li>类装载子系统</li>
 <li>运行时数据区（内存模型）</li>
@@ -447,34 +448,14 @@
         当老年代被放满时会执行full gc
         - full gc
             1. 会尝试的去收集整个堆的垃圾对象
-            2. 当老年代收集不出任何垃圾对象，那么下次有对象再复制到老年代时则会OOM（内存溢出）
-
-
-* GC
-    - 可达性分析算法
-        将GC Roots对象作为起点，从这些节点开始向下搜索引用对象，找到的对象都标记为非垃圾对象，其余为标记的对象都是垃圾对象
-        1. GC Roots：线程栈的本地变量，静态变量，本地方法变量等。
-    -  STW（stop the word）
-        当进行GC时，会将用户线程暂时停止
-    - 对象进入老年代的条件
-        1. 大对象直接进入老年代  
-            大对象就是需要大量连续内存空间的对象（比如，字符串，数组）。JVM参数：-XX:PretenUreSizeThreshold 可设置大对象的大小，这个参数只在Serial和ParNew两个收集器下有效。  
-            比如：-XX:PretenUreSizeThreshold=1000000 -XX:+UseSerialGC  
-            原因：为了避免为大对象分配内存时的复制操作而降低效率
-        2. 长期存活的对象将进入老年代  
-            分代年龄到15
-        3. 对象动态分代年龄判断  
-            当前放对象的Survivor区里，一批对象的总大小大于这块Survivor区内存大小的50%（-XX:TargetSurvivorRatio 可以设置），那么此时大于等于这批对象年龄最大值的对象可以直接进入老年代。  
-            这个规则是希望那些可能是长期存活的对象尽早进入老年代。  
-            对象动态年龄判断机制一般在Minor GC 之后出发
-        4. Minor GC后存活的对象Survivor区放不下  
-            这种情况会把存活的部分对象挪到老年代，部分可能继续在Survivor区
-        5. 老年代空间分配担保机制  
-            年轻代每次minor gc前JVM都会计算老年代剩余可用空间  
-            如果这个可用空间小于年轻代所有对象大小之和（包括垃圾对象）  
-            就会看一个（-XX:-HandlePromotionFailTure）是否设置，jdk8默认设置  
-            有，则会看老年代可用内存大小会否大于之前每一次minor gc后进入老年代的对象的平均大小，小于或没设置则会出发一次full gc。如果还没有足够空间，则OOM。</code></pre>
-          
+            2. 当老年代收集不出任何垃圾对象，那么下次有对象再复制到老年代时则会OOM（内存溢出）</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/07/03/jvm/jvm_basics/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

@@ -1292,7 +1292,9 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
   <entry>
     <title>JVM虚拟机</title>
     <url>/2020/07/03/jvm/jvm_basics/</url>
-    <content><![CDATA[<h4 id="jvm虚拟机内存模型图"><a href="#jvm虚拟机内存模型图" class="headerlink" title="jvm虚拟机内存模型图"></a>jvm虚拟机内存模型图</h4><p><img src="../../images/jvm.png" alt="jvm"></p>
+    <content><![CDATA[<meta name="referrer" content="no-referrer">
+
+<h4 id="jvm虚拟机内存模型图"><a href="#jvm虚拟机内存模型图" class="headerlink" title="jvm虚拟机内存模型图"></a>jvm虚拟机内存模型图</h4><p><img src="../../images/jvm.png" alt="jvm"></p>
 <h4 id="JVM虚拟机组成"><a href="#JVM虚拟机组成" class="headerlink" title="JVM虚拟机组成"></a>JVM虚拟机组成</h4><ul>
 <li>类装载子系统</li>
 <li>运行时数据区（内存模型）</li>
@@ -1354,10 +1356,8 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
         当老年代被放满时会执行full gc
         - full gc
             1. 会尝试的去收集整个堆的垃圾对象
-            2. 当老年代收集不出任何垃圾对象，那么下次有对象再复制到老年代时则会OOM（内存溢出）
-
-
-* GC
+            2. 当老年代收集不出任何垃圾对象，那么下次有对象再复制到老年代时则会OOM（内存溢出）</code></pre><a id="more"></a>
+<pre><code>* GC
     - 可达性分析算法
         将GC Roots对象作为起点，从这些节点开始向下搜索引用对象，找到的对象都标记为非垃圾对象，其余为标记的对象都是垃圾对象
         1. GC Roots：线程栈的本地变量，静态变量，本地方法变量等。
