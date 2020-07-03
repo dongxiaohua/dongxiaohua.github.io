@@ -1162,8 +1162,7 @@ public class GrpcService {
 
 </li>
 </ul>
-<pre><code>### 小记
-修改添加到source中的字段的mapping，可通过 POST my_index/_update_by_query?conflicts=proceed 来重新索引数据</code></pre>]]></content>
+<h3 id="小记"><a href="#小记" class="headerlink" title="小记"></a>小记</h3><pre><code>修改添加到source中的字段的mapping，可通过 POST my_index/_update_by_query?conflicts=proceed 来重新索引数据</code></pre>]]></content>
       <categories>
         <category>Elasticsearch</category>
       </categories>
