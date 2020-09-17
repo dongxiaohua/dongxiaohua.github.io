@@ -166,7 +166,77 @@ ps -ef|grep postgres | grep wait
 <p><span style="color:red">去重返回</span><br>SELECT <span style="color:red">DISTINCT</span><br>    T.parent_id<br>FROM<br>    db_task AS T<br>INNER JOIN db_job AS j ON T.status IN (<br>    ‘running’,<br>    ‘initComplete’,<br>    ‘fail’<br>)<br>AND j.status IN (‘created’, ‘dispatched’)</p>
 <h4 id="输入到文件"><a href="#输入到文件" class="headerlink" title="输入到文件"></a>输入到文件</h4><ul>
 <li>将查询语句写入文件<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; \w &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure></li>
-<li>将查询结果输入到文件<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; \o &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure></li>
+<li>将查询结果输入到文件<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; \o &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="WITH-AS-用法"><a href="#WITH-AS-用法" class="headerlink" title="WITH AS 用法"></a>WITH AS 用法</h4><ul>
+<li><p>定义<br>  也叫做自查询部分，可以定义一个SQL片断，该SQL片断会被整个SQL语句用到。可以使SQL语句的可读性更高，也可以在UNION ALL的不同部分，作为提供数据的部分。<br>  对于UNION ALL，使用WITH AS定义了一个UNION ALL语句，当该片断被调用2次以上，优化器会自动将该WITH AS短语所获取的数据放入一个Temp表中。而提示meterialize则是强制将WITH AS短语的数据放入一个全局临时表中。很多查询通过该方式都可以提高速度。  </p>
+</li>
+<li><p>用法</p>
+<ol>
+<li>创建一个临时表查询<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WITH cte AS (SELECT * FROM task WHERE status &#x3D; 1)  &#x2F;&#x2F;相当于创建了一个cte临时表</span><br><span class="line">SELECT * FROM task AS t WHERE cte.id &#x3D; t.id</span><br></pre></td></tr></table></figure></li>
+<li>创建两个临时表查询 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WITH</span><br><span class="line">e AS (SELECT * FROM emp),</span><br><span class="line">d AS (SELECT * FROM dept)</span><br><span class="line">SELECT * FROM e, d where e.id &#x3D; d.id;</span><br></pre></td></tr></table></figure></li>
+<li>修改指定数据状态 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WITH cte AS (</span><br><span class="line">    SELECT * FROM task WHERE status &#x3D; 1</span><br><span class="line">) </span><br><span class="line">UPDATE task AS t SET status &#x3D; 2 FROM WHERE t.id &#x3D; cte.id AND t.status &#x3D; cte.status</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>优点</p>
+<ol>
+<li>SQL可读性增强。比如对于特定with子查询取个有意义的名字等。</li>
+<li>with子查询只执行一次，将结果存储在用户临时表空间中，可以引用多次，增强性能。</li>
+</ol>
+</li>
+</ul>
+<h4 id="RETURNING-语句"><a href="#RETURNING-语句" class="headerlink" title="RETURNING 语句"></a>RETURNING 语句</h4><ul>
+<li><p>特性</p>
+<ol>
+<li>DELETE的情况，RETURNING返回的肯定是DELETE之前的结果。  </li>
+<li>INSERT的情况，RETURNING返回的一定是INSERT之后的结果。  </li>
+<li>UPDATE的情况，RETURNING返回的一定是UPDATE之后的结果。  </li>
+<li>RETURNING语句似乎和RETURN通用。（即两个可以相互替换）</li>
+<li>INSERT INTO VALUES语句支持RETURNING语句，而INSERT INTO SELECT语句不支持。</li>
+<li>MERGE语句不支持RETURNING语句。</li>
+</ol>
+</li>
+<li><p>注意</p>
+<ol>
+<li>不能与DML语句和远程对象一起使用；</li>
+<li>不能检索LONG类型信息；</li>
+<li>当通过视图向基表中插入数据时，只能与单基表视图一起使用。 </li>
+</ol>
+</li>
+<li><p>用法<br>  场景是获取指定任务，但需要修改状态</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WITH cte AS (</span><br><span class="line">    SELECT * FROM task WHERE status &#x3D; 1</span><br><span class="line">)</span><br><span class="line">UPDATE task AS t SET status &#x3D; 2 FROM cte WHERE t.id &#x3D; cte.id</span><br><span class="line">RETURNING t.*</span><br></pre></td></tr></table></figure>
+<h3 id="UPDATE-SET-FROM"><a href="#UPDATE-SET-FROM" class="headerlink" title="UPDATE SET FROM"></a>UPDATE SET FROM</h3></li>
+<li><p>作用： 想用一个表的字段也更新另一个表</p>
+</li>
+<li><p>用法<br>  场景1： 修改学生表中某学生姓名的同时也修改年级表中此同学姓名，根据学号</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">UPDATE student AS s SET name &#x3D; &#39;aa&#39; FROM grade AS g WHERE s.s_id &#x3D; g.s_ids</span><br></pre></td></tr></table></figure>
+<p>  场景2: 按年级表中某学生姓名修改学生表中某学生姓名，根据学号</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">UPDATE student AS s SET s.name &#x3D; g.name FROM grade AS g WHERE s.s_id &#x3D; g.s_ids</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="FRO-UPDATE"><a href="#FRO-UPDATE" class="headerlink" title="FRO UPDATE"></a>FRO UPDATE</h3><ul>
+<li>定义      <ol>
+<li>一种行级锁，又叫排它锁，一旦用户对某个行施加了行级加锁，则该用户可以查询也可以更新被加锁的数据行，其它用户只能查询但不能更新被加锁的数据行．如果其它用户想更新该表中的数据行，则也必须对该表施加行级锁．即使多个用户对一个表均使用了共享更新，但也不允许两个事务同时对一个表进行更新，真正对表进行更新时，是以独占方式锁表，一直到提交或复原该事务为止。行锁永远是独占方式锁。</li>
+<li>释放锁条件：<ol>
+<li>commit后 </li>
+<li>退出数据库 </li>
+<li>程序停止</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>例<ol>
+<li>select * from t for update 会等待行锁释放之后，返回查询结果。这种通常会等待提交后，才会解锁。</li>
+<li>select * from t for update nowait 不等待行锁释放，提示锁冲突，不返回结果</li>
+<li>select * from t for update wait 5 等待5秒，若行锁仍未释放，则提示锁冲突，不返回结果</li>
+<li>select * from t for update skip locked 查询返回查询结果，但忽略有行锁的记录 </li>
+</ol>
+</li>
+<li>用法<br>  场景： 获取指定状态的任务并修改状态，避免不同线程重复取相同任务  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">WITH cte AS (</span><br><span class="line">    SELECT * FROM task FROM status &#x3D; 1 FRO UPDATE</span><br><span class="line">)</span><br><span class="line">UPDATE task AS t SET status &#x3D; 2 FROM cte WHERE t.id &#x3D; cte.id</span><br><span class="line">RETURNING t.*</span><br></pre></td></tr></table></figure>
+<h3 id="UPDATE-SET-WHERE-IN-SELECT"><a href="#UPDATE-SET-WHERE-IN-SELECT" class="headerlink" title="UPDATE SET WHERE IN SELECT"></a>UPDATE SET WHERE IN SELECT</h3></li>
 </ul>
 ]]></content>
       <categories>
@@ -743,7 +813,7 @@ public class GrpcService {
   <entry>
     <title>shell连接远程服务器脚本</title>
     <url>/2019/07/29/shell/connect_ecs/</url>
-    <content><![CDATA[<h3 id="脚本示例"><a href="#脚本示例" class="headerlink" title="脚本示例"></a>脚本示例</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;expect</span><br><span class="line">set timeout 10</span><br><span class="line">set password Dong@0419</span><br><span class="line">spawn ssh root@47.104.229.246 -p 22</span><br><span class="line">expect &#123;</span><br><span class="line">    &quot;password:&quot; &#123;</span><br><span class="line">        send &quot;$&#123;password&#125;\r&quot;;</span><br><span class="line">        exp_continue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">interact</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h3 id="脚本示例"><a href="#脚本示例" class="headerlink" title="脚本示例"></a>脚本示例</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;expect</span><br><span class="line">set timeout 10</span><br><span class="line">set password ***</span><br><span class="line">spawn ssh root@&#123;IP&#125; -p 22</span><br><span class="line">expect &#123;</span><br><span class="line">    &quot;password:&quot; &#123;</span><br><span class="line">        send &quot;$&#123;password&#125;\r&quot;;</span><br><span class="line">        exp_continue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">interact</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>第1行：#!/usr/bin/expect  是告诉系统在执行这个脚本的时候用哪个命令来执行，这边是用expect，是一个类似bash和sh的shell。  </li>
@@ -751,6 +821,10 @@ public class GrpcService {
 <li>第3行 set password 123456 定义了一个变量 password，这个变量记录了登陆远程服务器的密码。  </li>
 <li>第4行 spawn ssh <a href="mailto:ubuntu@xxx.xxx.xxx.xxx">ubuntu@xxx.xxx.xxx.xxx</a> 调用 spawn 命令来执行一个系统命令。spawn是expect shell的内建命令，只有在expect环境下才可以使用。这行代码的功能就是通过ssh连接远程ECS。  </li>
 <li>5~10行 行用了一个 expect 命令，可以将这个命令理解为期待shell中输出结果中包含什么关键字。<br>如果包含的是 password: 则表示不是第一次连接这个远程服务器，直接用send输出密码即可。  </li>
+</ul>
+<h4 id="传送文件"><a href="#传送文件" class="headerlink" title="传送文件"></a>传送文件</h4><ul>
+<li>将本地文件复制到远程： scp {local txt} {userName}@{ip}:/{txt}</li>
+<li>将远程文件复制到本地： scp {usreName}@{ip}:/root/{txt}</li>
 </ul>
 ]]></content>
       <categories>
@@ -1478,6 +1552,87 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
       </categories>
       <tags>
         <tag>stream</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RateLimiter</title>
+    <url>/2020/08/25/java/rate_limiter/</url>
+    <content><![CDATA[<h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><pre><code>```java
+double batchDataRate = 20 //每秒可获取的许可数，及可操作数
+RateLimiter batchRateLimiter = RateLimiter.create(batchSlowDataRate)
+```java</code></pre><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><pre><code>1. RateLimiter 速率限制器，会在可配置的速率下分配许可证。如果必要的话，每个acquire() 会阻塞当前线程直到许可证可用后获取该许可证。一旦获取到许可证，不需要再释放许可证。  
+2. RateLimiter使用的是一种叫令牌桶的流控算法，RateLimiter会按照一定的频率往桶里扔令牌。  </code></pre><h4 id="acquire-与-acquire-size"><a href="#acquire-与-acquire-size" class="headerlink" title="acquire() 与 acquire(size)"></a>acquire() 与 acquire(size)</h4><pre><code>1. acquire()是针对每一条任务来获取许可的，每秒可获取的许可数取决于创建时给定数量。（通过控制每秒任务条数来达到限速）
+2. acquire(size)是针对于某一类任务来获取，即这批任务每秒内获取size个许可来干活。（通过限制每秒任务速率来达到限速）</code></pre><h4 id="项目中实际使用"><a href="#项目中实际使用" class="headerlink" title="项目中实际使用"></a>项目中实际使用</h4><pre><code>我的需求是将大批量的任务放缓速度来执行，从而达到短时间内对DB的压力
+前提是可以接受短时间的延迟</code></pre><blockquote>
+<blockquote>
+<p>引自：<a href="http://ifeve.com/guava-ratelimiter/" target="_blank" rel="noopener">http://ifeve.com/guava-ratelimiter/</a></p>
+</blockquote>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>rateLimiter</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多线程</title>
+    <url>/2020/08/24/thread/thread/</url>
+    <content><![CDATA[<h4 id="线程池-ThreadPoolExecutor"><a href="#线程池-ThreadPoolExecutor" class="headerlink" title="线程池 ThreadPoolExecutor"></a>线程池 ThreadPoolExecutor</h4><ul>
+<li><p>创建及参数<br>  ExecutorService executor = new ThreadPoolExecutor(0, 100, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100), new ThreadFactoryBuilder().setNameFormat(“demo-%d”).build());</Runnable></p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">类型</th>
+<th align="left">代表</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">corePoolSize</td>
+<td align="left">int</td>
+<td align="left">核心线程池大小</td>
+</tr>
+<tr>
+<td align="left">maximumPoolSize</td>
+<td align="left">int</td>
+<td align="left">最大线程池大小</td>
+</tr>
+<tr>
+<td align="left">keepAliveTime</td>
+<td align="left">long</td>
+<td align="left">线程最大空闲时间</td>
+</tr>
+<tr>
+<td align="left">unit</td>
+<td align="left">TimeUnit</td>
+<td align="left">时间单位</td>
+</tr>
+<tr>
+<td align="left">workQueue</td>
+<td align="left">BlockingQueue<Runnable></Runnable></td>
+<td align="left">线程等待队列</td>
+</tr>
+<tr>
+<td align="left">threadFactory</td>
+<td align="left">ThreadFactory</td>
+<td align="left">线程创建工厂</td>
+</tr>
+<tr>
+<td align="left">handler</td>
+<td align="left">RejectedExecutionHandler</td>
+<td align="left">拒绝策略</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>thread</category>
+      </categories>
+      <tags>
+        <tag>thread</tag>
       </tags>
   </entry>
 </search>

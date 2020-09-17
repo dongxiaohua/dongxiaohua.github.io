@@ -292,6 +292,612 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/java/grpc_java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/dxh.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/21/java/grpc_java/" itemprop="url">GRPC</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:57+08:00">
+                2018-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="官方文档：http-grpc-mydoc-io"><a href="#官方文档：http-grpc-mydoc-io" class="headerlink" title="官方文档：http://grpc.mydoc.io/"></a>官方文档：<a href="http://grpc.mydoc.io/" target="_blank" rel="noopener">http://grpc.mydoc.io/</a></h4><h3 id="proto文件："><a href="#proto文件：" class="headerlink" title="proto文件："></a>proto文件：</h3><pre>
+syntax = "proto3";
+
+//以外部类模式生成
+option java_multiple_files = true;
+//所在包名
+option java_package = "cn.dxh.practice";
+//最外层类名称
+option java_outer_classname = "PracticeService";
+
+// 定义服务
+service UserService {
+    //按id查询数据
+    rpc FindById (FindByIdRequest) returns (FindByIdResponse) {
+    }
+
+    //服务器端流式 RPC
+    //    客户端发送一个请求给服务端，可获取一个数据流用来读取一系列消息。客户端从返回的数据流里一直读取直到没有更多消息为止。
+    //    通过在 响应 类型前插入 stream 关键字，可以指定一个服务器端的流方法。
+    //查询所有符合条件的数据
+    rpc FindByAge (FindByAgeRequest) returns (stream UserEntity) {
+    }
+
+    //客户端流式 RPC
+    //    即客户端用提供的一个数据流写入并发送一系列消息给服务端。
+    //    客户端写入一个消息序列并将其发送到服务器，同样也是使用流。一旦客户端完成消息写入，就等待服务端读取这些消息并返回应答。
+    //    通过在 请求 类型前指定 stream 关键字来指定一个客户端的流方法。
+    //删除数据
+    rpc DeleteById (DeletedByIdRequest) returns (DeletedByIdResponse) {
+    }
+
+    //双向流式 RPC
+    //    即两边都可以分别通过一个读写数据流来发送一系列消息。这两个数据流操作是相互独立的，所以客户端和服务端能按其希望的任意顺序读写，
+    //    例如：服务端可以在写应答前等待所有的客户端消息，或者它可以先读一个消息再写一个消息，或者是读写相结合的其他方式。每个数据流里消息的顺序会被保持。
+    //通过在请求和响应前加 stream 关键字去制定方法的类型。
+    rpc FindByName (stream FindByNameRequest) returns (stream UserEntity) {
+    }
+}
+
+//按id查询数据参数
+message FindByIdRequest {
+    int64 id = 1;
+}
+//按id查询数据返回结果
+message FindByIdResponse {
+    string name = 2;
+    int32 age = 3;
+}
+//查询语句的条件参数
+message FindByAgeRequest {
+    int32 age = 1;
+}
+
+//删除数据的参数
+message DeletedByIdRequest {
+    int64 id = 1;
+}
+
+//删除数据的返回结果
+message DeletedByIdResponse {
+}
+
+//参数
+message FindByNameRequest {
+}
+
+//实例
+message UserEntity {
+    int64 id = 1;
+    string name = 2;
+    int32 age = 3;
+    string from = 4;
+    string pwd = 5;
+}
+
+</pre>
+
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><h4 id="编写serviceImpl类"><a href="#编写serviceImpl类" class="headerlink" title="编写serviceImpl类"></a>编写serviceImpl类</h4><p> 此类需要继承 UserServiceGrpc.UserServiceImplBase ,这个类提供了我们定义的接口，继承后并覆盖需要实现的方法。</p>
+<pre>
+@Slf4j
+@Service
+public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
+
+  @Resource
+  private UserMapper userMapper;
+
+  /**
+   * 简单rpc
+   * 其中StreamObserver<UserEntity>是一个应答观察者,用于封装返回的信息,服务器把该信息传给客户端.请求结束要调用onCompleted()方法.
+   * @param request
+   * @param responseObserver
+   */
+  @Override
+  public void findById(FindByIdRequest request, StreamObserver<UserEntity> responseObserver) {
+    try {
+      long id = request.getId();
+      userMapper.findById(id)
+      responseObserver.onNext(UserEntity.newBuilder().build());
+//      请求结束
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      log.error("findById is error");
+    }
+  }
+
+  /**
+   * 服务器端流式 RPC
+   *
+   * @param request
+   * @param responseObserver
+   */
+  @Override
+  public void findByAge(FindByAgeRequest request, StreamObserver<UserEntity> responseObserver) {
+    try {
+      int age = request.getAge();
+      List<UserEntity> userEntities = userMapper.findByAgs(age);
+      userEntities.forEach(userEntity -> responseObserver.onNext(UserEntity.newBuilder().build()));
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      log.error("");
+    }
+  }
+
+
+  /**
+   * 客户端流式 RPC
+   * 服务端就需要一直监控客户端写入情况,因此需要一个StreamObserver接口,其中onNext方法会在客户端每次写入时调用,当写入完毕时调用onCompleted()方法
+   * @param responseObserver
+   * @return
+   */
+  @Override
+  public StreamObserver<DeletedByIdRequest> deleteById(StreamObserver<DeletedByIdResponse> responseObserver) {
+    return new StreamObserver<DeletedByIdRequest>() {
+      @Override
+      public void onNext(DeletedByIdRequest deletedByIdRequest) {
+        userMapper.deletedById(deletedByIdRequest.getId());
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onNext(DeletedByIdResponse.newBuilder().build());
+        responseObserver.onCompleted();
+      }
+    };
+  }
+
+  /**
+   * 双向流式 RPC
+   *
+   * @param responseObserver
+   * @return
+   */
+  @Override
+  public StreamObserver<FindByNameRequest> findByName(StreamObserver<UserEntity> responseObserver) {
+    return new StreamObserver<FindByNameRequest>() {
+      @Override
+      public void onNext(FindByNameRequest findByNameRequest) {
+        userMapper.findByName(findByNameRequest.getName());
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onNext(UserEntity.newBuilder().build());
+        responseObserver.onCompleted();
+      }
+    };
+  }
+}
+</FindByNameRequest></UserEntity></FindByNameRequest></DeletedByIdRequest></DeletedByIdResponse></DeletedByIdRequest></UserEntity></UserEntity></UserEntity></UserEntity></pre>
+
+<h4 id="创建服务端"><a href="#创建服务端" class="headerlink" title="创建服务端"></a>创建服务端</h4><pre>
+@Component
+public class GrpcService {
+
+  private int port = 19090;
+  private Server server;
+
+  @Resource
+  private UserServiceGrpc.UserServiceImplBase userService;
+
+  @PostConstruct
+  public void init() throws IOException {
+    ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true)
+                                                            .setNameFormat("grpc-server-thread-%d")
+                                                            .build();
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(10,
+                                                         100,
+                                                         60L,
+                                                         TimeUnit.SECONDS,
+                                                         new LinkedBlockingQueue<>(),
+                                                         threadFactory,
+                                                         new ThreadPoolExecutor.CallerRunsPolicy());
+    server = ServerBuilder.forPort(port)
+                          .addService(userService)
+                          .executor(executor).build();
+    server.start();
+  }
+
+  @PreDestroy
+  public void destroy() {
+    if (server != null) {
+      server.shutdown();
+    }
+  }
+
+}
+</pre>
+
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/database/postgresql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/dxh.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/21/database/postgresql/" itemprop="url">PostgreSql</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:10+08:00">
+                2018-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="psql常用命令"><a href="#psql常用命令" class="headerlink" title="psql常用命令"></a>psql常用命令</h3><h5 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h5><p>psql -h [ip] -U [username] -d [databases]</p>
+<ul>
+<li>创建schema<br>CREATE SCHEMA my_schema;<br>GRANT ALL ON SCHEMA my_schema TO my_user;</li>
+<li>查看当前schema<br>SHOW search_path;</li>
+<li>查询数据库下所有schema<br>select * from information_schema.schemata;</li>
+<li>查询指定schema下所有表<br>select * from information_schema.tables where table_schema=’audit’;</li>
+<li>切换schema（连接级）<br>set search_path to my_schema;</li>
+<li>改变默认schema（数据库级）<br>ALTER database “my_database” SET search_path TO my_schema;</li>
+<li>指定schema查询<br>select count(*) from audit.fxk_pg_oplog;</li>
+</ul>
+<h3 id="pg基础知识与基本操作"><a href="#pg基础知识与基本操作" class="headerlink" title="pg基础知识与基本操作"></a>pg基础知识与基本操作</h3><p><span style="color:red">查询pg库的所有表名称</span><br>select tablename from pg_tables where schemaname=’public’;<br><span style="color:red">获取pg表的字段</span><br>select column_name from information_schema.columns<br>where table_name = ‘db_job’;</p>
+<p><span style="color:red">–查看当前活动的客户端连接数</span><br> SELECT count(*) FROM pg_stat_activity WHERE NOT pid=pg_backend_pid();<br><span style="color:red">–查看PostgreSQL正在执行的SQL</span><br>SELECT<br>    procpid,<br>    start,<br>    now() - start AS lap,<br>    current_query<br>FROM<br>    (SELECT<br>        backendid,<br>        pg_stat_get_backend_pid(S.backendid) AS procpid,<br>        pg_stat_get_backend_activity_start(S.backendid) AS start,<br>       pg_stat_get_backend_activity(S.backendid) AS current_query<br>    FROM<br>        (SELECT pg_stat_get_backend_idset() AS backendid) AS S<br>    ) AS S ,pg_stat_activity pa<br>WHERE<br>   current_query &lt;&gt; ‘<IDLE>‘ and  procpid&lt;&gt; pg_backend_pid() and pa.pid=s.procpid and pa.state&lt;&gt;’idle’<br>ORDER BY<br>   lap DESC;<br><span style="color:red">–查看当前库表和索引的的大小并排序显示前20条</span><br>SELECT<br>nspname,<br>relname,<br>relkind as “type”,<br>pg_size_pretty(pg_table_size(C.oid)) AS size,<br>pg_size_pretty(pg_indexes_size(C.oid)) AS idxsize,<br>pg_size_pretty(pg_total_relation_size(C.oid)) as “total”<br>FROM pg_class C<br>LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)<br>WHERE nspname NOT IN (‘pg_catalog’, ‘information_schema’) AND<br>nspname !~ ‘^pg_toast’ AND<br>relkind IN (‘r’,’i’)<br>ORDER BY pg_total_relation_size(C.oid) DESC<br>LIMIT 20; </IDLE></p>
+<span style="color:blue">
+procpid：进程id  
+start：进程开始时间  
+lap：经过时间  
+current_query：执行中的sql  
+怎样停止正在执行的sql  
+SELECT pg_cancel_backend(进程id);  
+或者用系统函数  
+kill -9 进程id;
+--查找是否有waiting  
+ps -ef|grep postgres | grep wait
+</span>
+
+<p>排序：ORDER BY 字段 DESC<br><span style="color:red">模糊不区分大小写查询：</span>UPPER(字段) LIKE UPPER(‘%${search}%’)<br><span style="color:red">查指定条数：</span>LIMIT 长度 OFFSET 起始位置</p>
+<p>关联查询：<br>SELECT fail_count<br>FROM test_report AS  f<br>INNER JOIN(SELECT MAX(id) AS b_id FROM test_build WHERE job_id = #{jobId})  r<br>ON f.build_id = r.b_id</p>
+<p><span style="color:red">去重返回</span><br>SELECT <span style="color:red">DISTINCT</span><br>    T.parent_id<br>FROM<br>    db_task AS T<br>INNER JOIN db_job AS j ON T.status IN (<br>    ‘running’,<br>    ‘initComplete’,<br>    ‘fail’<br>)<br>AND j.status IN (‘created’, ‘dispatched’)</p>
+<h4 id="输入到文件"><a href="#输入到文件" class="headerlink" title="输入到文件"></a>输入到文件</h4><ul>
+<li>将查询语句写入文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; \w &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure></li>
+<li>将查询结果输入到文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; \o &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="WITH-AS-用法"><a href="#WITH-AS-用法" class="headerlink" title="WITH AS 用法"></a>WITH AS 用法</h4><ul>
+<li><p>定义<br>  也叫做自查询部分，可以定义一个SQL片断，该SQL片断会被整个SQL语句用到。可以使SQL语句的可读性更高，也可以在UNION ALL的不同部分，作为提供数据的部分。<br>  对于UNION ALL，使用WITH AS定义了一个UNION ALL语句，当该片断被调用2次以上，优化器会自动将该WITH AS短语所获取的数据放入一个Temp表中。而提示meterialize则是强制将WITH AS短语的数据放入一个全局临时表中。很多查询通过该方式都可以提高速度。  </p>
+</li>
+<li><p>用法</p>
+<ol>
+<li>创建一个临时表查询<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WITH cte AS (SELECT * FROM task WHERE status &#x3D; 1)  &#x2F;&#x2F;相当于创建了一个cte临时表</span><br><span class="line">SELECT * FROM task AS t WHERE cte.id &#x3D; t.id</span><br></pre></td></tr></table></figure></li>
+<li>创建两个临时表查询 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WITH</span><br><span class="line">e AS (SELECT * FROM emp),</span><br><span class="line">d AS (SELECT * FROM dept)</span><br><span class="line">SELECT * FROM e, d where e.id &#x3D; d.id;</span><br></pre></td></tr></table></figure></li>
+<li>修改指定数据状态 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WITH cte AS (</span><br><span class="line">    SELECT * FROM task WHERE status &#x3D; 1</span><br><span class="line">) </span><br><span class="line">UPDATE task AS t SET status &#x3D; 2 FROM WHERE t.id &#x3D; cte.id AND t.status &#x3D; cte.status</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>优点</p>
+<ol>
+<li>SQL可读性增强。比如对于特定with子查询取个有意义的名字等。</li>
+<li>with子查询只执行一次，将结果存储在用户临时表空间中，可以引用多次，增强性能。</li>
+</ol>
+</li>
+</ul>
+<h4 id="RETURNING-语句"><a href="#RETURNING-语句" class="headerlink" title="RETURNING 语句"></a>RETURNING 语句</h4><ul>
+<li><p>特性</p>
+<ol>
+<li>DELETE的情况，RETURNING返回的肯定是DELETE之前的结果。  </li>
+<li>INSERT的情况，RETURNING返回的一定是INSERT之后的结果。  </li>
+<li>UPDATE的情况，RETURNING返回的一定是UPDATE之后的结果。  </li>
+<li>RETURNING语句似乎和RETURN通用。（即两个可以相互替换）</li>
+<li>INSERT INTO VALUES语句支持RETURNING语句，而INSERT INTO SELECT语句不支持。</li>
+<li>MERGE语句不支持RETURNING语句。</li>
+</ol>
+</li>
+<li><p>注意</p>
+<ol>
+<li>不能与DML语句和远程对象一起使用；</li>
+<li>不能检索LONG类型信息；</li>
+<li>当通过视图向基表中插入数据时，只能与单基表视图一起使用。 </li>
+</ol>
+</li>
+<li><p>用法<br>  场景是获取指定任务，但需要修改状态</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WITH cte AS (</span><br><span class="line">    SELECT * FROM task WHERE status &#x3D; 1</span><br><span class="line">)</span><br><span class="line">UPDATE task AS t SET status &#x3D; 2 FROM cte WHERE t.id &#x3D; cte.id</span><br><span class="line">RETURNING t.*</span><br></pre></td></tr></table></figure>
+<h3 id="UPDATE-SET-FROM"><a href="#UPDATE-SET-FROM" class="headerlink" title="UPDATE SET FROM"></a>UPDATE SET FROM</h3></li>
+<li><p>作用： 想用一个表的字段也更新另一个表</p>
+</li>
+<li><p>用法<br>  场景1： 修改学生表中某学生姓名的同时也修改年级表中此同学姓名，根据学号</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UPDATE student AS s SET name &#x3D; &#39;aa&#39; FROM grade AS g WHERE s.s_id &#x3D; g.s_ids</span><br></pre></td></tr></table></figure>
+<p>  场景2: 按年级表中某学生姓名修改学生表中某学生姓名，根据学号</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UPDATE student AS s SET s.name &#x3D; g.name FROM grade AS g WHERE s.s_id &#x3D; g.s_ids</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="FRO-UPDATE"><a href="#FRO-UPDATE" class="headerlink" title="FRO UPDATE"></a>FRO UPDATE</h3><ul>
+<li>定义      <ol>
+<li>一种行级锁，又叫排它锁，一旦用户对某个行施加了行级加锁，则该用户可以查询也可以更新被加锁的数据行，其它用户只能查询但不能更新被加锁的数据行．如果其它用户想更新该表中的数据行，则也必须对该表施加行级锁．即使多个用户对一个表均使用了共享更新，但也不允许两个事务同时对一个表进行更新，真正对表进行更新时，是以独占方式锁表，一直到提交或复原该事务为止。行锁永远是独占方式锁。</li>
+<li>释放锁条件：<ol>
+<li>commit后 </li>
+<li>退出数据库 </li>
+<li>程序停止</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>例<ol>
+<li>select * from t for update 会等待行锁释放之后，返回查询结果。这种通常会等待提交后，才会解锁。</li>
+<li>select * from t for update nowait 不等待行锁释放，提示锁冲突，不返回结果</li>
+<li>select * from t for update wait 5 等待5秒，若行锁仍未释放，则提示锁冲突，不返回结果</li>
+<li>select * from t for update skip locked 查询返回查询结果，但忽略有行锁的记录 </li>
+</ol>
+</li>
+<li>用法<br>  场景： 获取指定状态的任务并修改状态，避免不同线程重复取相同任务  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WITH cte AS (</span><br><span class="line">    SELECT * FROM task FROM status &#x3D; 1 FRO UPDATE</span><br><span class="line">)</span><br><span class="line">UPDATE task AS t SET status &#x3D; 2 FROM cte WHERE t.id &#x3D; cte.id</span><br><span class="line">RETURNING t.*</span><br></pre></td></tr></table></figure>
+<h3 id="UPDATE-SET-WHERE-IN-SELECT"><a href="#UPDATE-SET-WHERE-IN-SELECT" class="headerlink" title="UPDATE SET WHERE IN SELECT"></a>UPDATE SET WHERE IN SELECT</h3></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/11/java/aop_audit_log_java/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1227,7 +1833,7 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
               
                 <a href="/archives/%7C%7Carchive">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1238,7 +1844,7 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1249,7 +1855,7 @@ SearchResponse resp = client.search(sr, RequestOptions.DEFAULT)
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

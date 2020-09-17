@@ -292,6 +292,340 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/31/http/time_wait/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/dxh.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/31/http/time_wait/" itemprop="url">TIME_WAIT状态分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-31T10:39:04+08:00">
+                2019-07-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/http/" itemprop="url" rel="index">
+                    <span itemprop="name">http</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="TCP三次握手四次挥手"><a href="#TCP三次握手四次挥手" class="headerlink" title="TCP三次握手四次挥手"></a>TCP三次握手四次挥手</h3><h4 id="三次握手-（建立连接协议）"><a href="#三次握手-（建立连接协议）" class="headerlink" title="三次握手 （建立连接协议）"></a>三次握手 （建立连接协议）</h4><ul>
+<li>第一次握手：建立连接时，客户端发送syn包（syn=j）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</li>
+<li>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态。</li>
+<li>第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1），此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。  <blockquote>
+<p>握手过程中传送的包里不包含数据，三次握手完毕后，客户端与服务器才正式开始传送数据。理想状态下，TCP连接一旦建立，在通信双方中的任何一方主动关闭连接之前，TCP连接都将被一直保持下去。  </p>
+</blockquote>
+</li>
+</ul>
+<h4 id="四次挥手（连接终止协议）"><a href="#四次挥手（连接终止协议）" class="headerlink" title="四次挥手（连接终止协议）"></a>四次挥手（连接终止协议）</h4><ul>
+<li>第一次挥手：主动关闭方发送一个FIN，用来关闭主动方到被动关闭方的数据传送，也就是主动关闭方告诉被动关闭方：我已经不会再给你发数据了(当然，在fin包之前发送出去的数据，如果没有收到对应的ack确认报文，主动关闭方依然会重发这些数据)，但是，此时主动关闭方还可以接受数据。主动方处于FIN_WAIT_1状态</li>
+<li>第二次挥手：被动关闭方收到FIN包后，发送一个ACK给对方，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号， SYN 和 FIN 都有seq序号）。主动方处于FIN_WAIT_2状态</li>
+<li>第三次挥手：被动关闭方发送一个FIN，用来关闭被动关闭方到主动关闭方的数据传送，也就是告诉主动关闭方，我的数据也发送完了，不会再给你发数据了。被动房处于LAST_ACK状态</li>
+<li>第四次挥手：主动关闭方收到FIN后，发送一个ACK给被动关闭方，主动方此时处于TIME_WAIT状态，被动方收到ACK报文后关闭连接，至此，完成四次挥手。  <blockquote>
+<p>由于TCP连接是全双工的，因此每个方向都必须单独进行关闭。这原则是当一方完成它的数据发送任务后就能发送一个FIN来终止这个方向的连接。收到一个 FIN只意味着这一方向上没有数据流动，一个TCP连接在收到一个FIN后仍能发送数据。首先进行关闭的一方将执行主动关闭，而另一方执行被动关闭。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="状态解释"><a href="#状态解释" class="headerlink" title="状态解释"></a>状态解释</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CLOSED：无连接是活动的或正在进行</span><br><span class="line">LISTEN：服务器在等待进入呼叫</span><br><span class="line">SYN_RECV：一个连接请求已经到达，等待确认</span><br><span class="line">SYN_SENT：应用已经开始，打开一个连接</span><br><span class="line">ESTABLISHED：正常数据传输状态</span><br><span class="line">FIN_WAIT1：应用说它已经完成</span><br><span class="line">FIN_WAIT2：另一边已同意释放</span><br><span class="line">ITMED_WAIT：等待所有分组死掉</span><br><span class="line">CLOSING：两边同时尝试关闭</span><br><span class="line">TIME_WAIT：另一边已初始化一个释放</span><br><span class="line">LAST_ACK：等待所有分组死掉</span><br></pre></td></tr></table></figure>
+
+<h4 id="TIME-WAIT过多问题原因及解决（Cannot-assign-requested-address）"><a href="#TIME-WAIT过多问题原因及解决（Cannot-assign-requested-address）" class="headerlink" title="TIME_WAIT过多问题原因及解决（Cannot assign requested address）"></a>TIME_WAIT过多问题原因及解决（Cannot assign requested address）</h4><ul>
+<li><p>什么时候会出现TIME_WAIT<br>TCP在关闭的时候有个四次挥手的过程，主动关闭方在四次挥手的最后一个ACK发送之后会变成TIME_WAIT状态。</p>
+</li>
+<li><p>TIME_WAIT状态维持多久<br>主动关闭方响应完最后一次ACK之后，会在TIME_WAIT这个状态维持2MSL</p>
+</li>
+<li><p>MSL<br>MSL全称是maximum segment lifetime，最长分节生命期。MSL是任何IP数据报能够在因特网存活的最长时间。我们知道，这个时间是有限的，因为每个数据报都含有一个限跳（hop limit）的8位字段，它的最大值是255（简单的讲就是不同经过超过255个路由器）。尽管这个跳数限制而不是真正的时间限制，我们仍然假设最大限跳的分组在网络中存在的时间不可能超过MSL秒。</p>
+</li>
+<li><p>TIME_WAIT的作用<br>1）可靠地实现TCP全双工连接的终止<br> 在进行关闭连接四次挥手协议时，最后的ACK是由主动关闭端发出的，如果这个最终的ACK丢失，服务器将重发最终的FIN，<br>因此客户端必须维护状态信息允许它重发最终的ACK。如果不维持这个状态信息，那么客户端将响应RST分节，服务器将此分节解释成一个错误（在java中会抛出connection reset的SocketException)。<br>因而，要实现TCP全双工连接的正常终止，必须处理终止序列四个分节中任何一个分节的丢失情况，主动关闭的客户端必须维持状态信息进入TIME_WAIT状态。<br>2）允许老的重复分节在网络中消逝<br>TCP分节可能由于路由器异常而“迷途”，在迷途期间，TCP发送端可能因确认超时而重发这个分节，迷途的分节在路由器修复后也会被送到最终目的地，这个原来的迷途分节就称为lost duplicate。<br>在关闭一个TCP连接后，马上又重新建立起一个相同的IP地址和端口之间的TCP连接，后一个连接被称为前一个连接的化身（incarnation)，那么有可能出现这种情况，前一个连接的迷途重复分组在前一个连接终止后出现，从而被误解成从属于新的化身。<br>为了避免这个情况，TCP不允许处于TIME_WAIT状态的连接启动一个新的化身，因为TIME_WAIT状态持续2MSL，就可以保证当成功建立一个TCP连接的时候，来自连接先前化身的重复分组已经在网络中消逝。  </p>
+</li>
+<li><p>大量TIME_WAIT造成的影响<br>在高并发短连接的TCP服务器上，当服务器处理完请求后立刻主动正常关闭连接。这个场景下会出现大量socket处于TIME_WAIT状态。如果客户端的并发量持续很高，此时部分客户端就会显示连接不上。<br>主动正常关闭TCP连接，都会出现TIMEWAIT。<br>为什么我们要关注这个高并发短连接呢？有两个方面需要注意：</p>
+</li>
+</ul>
+<ol>
+<li>高并发可以让主动方（大部分是客户端）在短时间范围内同时占用大量端口，而端口有个0~65535的范围，并不是很多，刨除系统和其他服务要用的，剩下的就更少了。（服务端端口是复用的）</li>
+<li>在这个场景中，短连接表示“业务处理+传输数据的时间 远远小于 TIMEWAIT超时的时间”的连接。<br>例如： 取一个web页面，1秒钟的http短连接处理完业务，在关闭连接之后，这个业务用过的端口会停留在TIMEWAIT状态几分钟，而这几分钟，其他HTTP请求来临的时候是无法占用此端口的(占着茅坑不拉翔)。单用这个业务计算服务器的利用率会发现，服务器干正经事的时间和端口（资源）被挂着无法被使用的时间的比例是 1：几百，服务器资源严重浪费。（说个题外话，从这个意义出发来考虑服务器性能调优的话，长连接业务的服务就不需要考虑TIMEWAIT状态。同时，假如你对服务器业务场景非常熟悉，你会发现，在实际业务场景中，一般长连接对应的业务的并发量并不会很高。  </li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/29/shell/connect_ecs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaohua Dong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/dxh.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="隔壁董小花同学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/29/shell/connect_ecs/" itemprop="url">shell连接远程服务器脚本</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-29T17:14:41+08:00">
+                2019-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/shell/" itemprop="url" rel="index">
+                    <span itemprop="name">shell</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="脚本示例"><a href="#脚本示例" class="headerlink" title="脚本示例"></a>脚本示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;expect</span><br><span class="line">set timeout 10</span><br><span class="line">set password ***</span><br><span class="line">spawn ssh root@&#123;IP&#125; -p 22</span><br><span class="line">expect &#123;</span><br><span class="line">    &quot;password:&quot; &#123;</span><br><span class="line">        send &quot;$&#123;password&#125;\r&quot;;</span><br><span class="line">        exp_continue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">interact</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第1行：#!/usr/bin/expect  是告诉系统在执行这个脚本的时候用哪个命令来执行，这边是用expect，是一个类似bash和sh的shell。  </li>
+<li>第2行 set timeout 10 设置超时时间为10s。  </li>
+<li>第3行 set password 123456 定义了一个变量 password，这个变量记录了登陆远程服务器的密码。  </li>
+<li>第4行 spawn ssh <a href="mailto:ubuntu@xxx.xxx.xxx.xxx">ubuntu@xxx.xxx.xxx.xxx</a> 调用 spawn 命令来执行一个系统命令。spawn是expect shell的内建命令，只有在expect环境下才可以使用。这行代码的功能就是通过ssh连接远程ECS。  </li>
+<li>5~10行 行用了一个 expect 命令，可以将这个命令理解为期待shell中输出结果中包含什么关键字。<br>如果包含的是 password: 则表示不是第一次连接这个远程服务器，直接用send输出密码即可。  </li>
+</ul>
+<h4 id="传送文件"><a href="#传送文件" class="headerlink" title="传送文件"></a>传送文件</h4><ul>
+<li>将本地文件复制到远程： scp {local txt} {userName}@{ip}:/{txt}</li>
+<li>将远程文件复制到本地： scp {usreName}@{ip}:/root/{txt}</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/22/basics/maven_version/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1764,542 +2098,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/java/grpc_java/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaohua Dong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/dxh.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="隔壁董小花同学">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/21/java/grpc_java/" itemprop="url">GRPC</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:57+08:00">
-                2018-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="官方文档：http-grpc-mydoc-io"><a href="#官方文档：http-grpc-mydoc-io" class="headerlink" title="官方文档：http://grpc.mydoc.io/"></a>官方文档：<a href="http://grpc.mydoc.io/" target="_blank" rel="noopener">http://grpc.mydoc.io/</a></h4><h3 id="proto文件："><a href="#proto文件：" class="headerlink" title="proto文件："></a>proto文件：</h3><pre>
-syntax = "proto3";
-
-//以外部类模式生成
-option java_multiple_files = true;
-//所在包名
-option java_package = "cn.dxh.practice";
-//最外层类名称
-option java_outer_classname = "PracticeService";
-
-// 定义服务
-service UserService {
-    //按id查询数据
-    rpc FindById (FindByIdRequest) returns (FindByIdResponse) {
-    }
-
-    //服务器端流式 RPC
-    //    客户端发送一个请求给服务端，可获取一个数据流用来读取一系列消息。客户端从返回的数据流里一直读取直到没有更多消息为止。
-    //    通过在 响应 类型前插入 stream 关键字，可以指定一个服务器端的流方法。
-    //查询所有符合条件的数据
-    rpc FindByAge (FindByAgeRequest) returns (stream UserEntity) {
-    }
-
-    //客户端流式 RPC
-    //    即客户端用提供的一个数据流写入并发送一系列消息给服务端。
-    //    客户端写入一个消息序列并将其发送到服务器，同样也是使用流。一旦客户端完成消息写入，就等待服务端读取这些消息并返回应答。
-    //    通过在 请求 类型前指定 stream 关键字来指定一个客户端的流方法。
-    //删除数据
-    rpc DeleteById (DeletedByIdRequest) returns (DeletedByIdResponse) {
-    }
-
-    //双向流式 RPC
-    //    即两边都可以分别通过一个读写数据流来发送一系列消息。这两个数据流操作是相互独立的，所以客户端和服务端能按其希望的任意顺序读写，
-    //    例如：服务端可以在写应答前等待所有的客户端消息，或者它可以先读一个消息再写一个消息，或者是读写相结合的其他方式。每个数据流里消息的顺序会被保持。
-    //通过在请求和响应前加 stream 关键字去制定方法的类型。
-    rpc FindByName (stream FindByNameRequest) returns (stream UserEntity) {
-    }
-}
-
-//按id查询数据参数
-message FindByIdRequest {
-    int64 id = 1;
-}
-//按id查询数据返回结果
-message FindByIdResponse {
-    string name = 2;
-    int32 age = 3;
-}
-//查询语句的条件参数
-message FindByAgeRequest {
-    int32 age = 1;
-}
-
-//删除数据的参数
-message DeletedByIdRequest {
-    int64 id = 1;
-}
-
-//删除数据的返回结果
-message DeletedByIdResponse {
-}
-
-//参数
-message FindByNameRequest {
-}
-
-//实例
-message UserEntity {
-    int64 id = 1;
-    string name = 2;
-    int32 age = 3;
-    string from = 4;
-    string pwd = 5;
-}
-
-</pre>
-
-<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><h4 id="编写serviceImpl类"><a href="#编写serviceImpl类" class="headerlink" title="编写serviceImpl类"></a>编写serviceImpl类</h4><p> 此类需要继承 UserServiceGrpc.UserServiceImplBase ,这个类提供了我们定义的接口，继承后并覆盖需要实现的方法。</p>
-<pre>
-@Slf4j
-@Service
-public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
-
-  @Resource
-  private UserMapper userMapper;
-
-  /**
-   * 简单rpc
-   * 其中StreamObserver<UserEntity>是一个应答观察者,用于封装返回的信息,服务器把该信息传给客户端.请求结束要调用onCompleted()方法.
-   * @param request
-   * @param responseObserver
-   */
-  @Override
-  public void findById(FindByIdRequest request, StreamObserver<UserEntity> responseObserver) {
-    try {
-      long id = request.getId();
-      userMapper.findById(id)
-      responseObserver.onNext(UserEntity.newBuilder().build());
-//      请求结束
-      responseObserver.onCompleted();
-    } catch (Exception e) {
-      log.error("findById is error");
-    }
-  }
-
-  /**
-   * 服务器端流式 RPC
-   *
-   * @param request
-   * @param responseObserver
-   */
-  @Override
-  public void findByAge(FindByAgeRequest request, StreamObserver<UserEntity> responseObserver) {
-    try {
-      int age = request.getAge();
-      List<UserEntity> userEntities = userMapper.findByAgs(age);
-      userEntities.forEach(userEntity -> responseObserver.onNext(UserEntity.newBuilder().build()));
-      responseObserver.onCompleted();
-    } catch (Exception e) {
-      log.error("");
-    }
-  }
-
-
-  /**
-   * 客户端流式 RPC
-   * 服务端就需要一直监控客户端写入情况,因此需要一个StreamObserver接口,其中onNext方法会在客户端每次写入时调用,当写入完毕时调用onCompleted()方法
-   * @param responseObserver
-   * @return
-   */
-  @Override
-  public StreamObserver<DeletedByIdRequest> deleteById(StreamObserver<DeletedByIdResponse> responseObserver) {
-    return new StreamObserver<DeletedByIdRequest>() {
-      @Override
-      public void onNext(DeletedByIdRequest deletedByIdRequest) {
-        userMapper.deletedById(deletedByIdRequest.getId());
-      }
-
-      @Override
-      public void onError(Throwable throwable) {
-        throwable.printStackTrace();
-      }
-
-      @Override
-      public void onCompleted() {
-        responseObserver.onNext(DeletedByIdResponse.newBuilder().build());
-        responseObserver.onCompleted();
-      }
-    };
-  }
-
-  /**
-   * 双向流式 RPC
-   *
-   * @param responseObserver
-   * @return
-   */
-  @Override
-  public StreamObserver<FindByNameRequest> findByName(StreamObserver<UserEntity> responseObserver) {
-    return new StreamObserver<FindByNameRequest>() {
-      @Override
-      public void onNext(FindByNameRequest findByNameRequest) {
-        userMapper.findByName(findByNameRequest.getName());
-      }
-
-      @Override
-      public void onError(Throwable throwable) {
-        throwable.printStackTrace();
-      }
-
-      @Override
-      public void onCompleted() {
-        responseObserver.onNext(UserEntity.newBuilder().build());
-        responseObserver.onCompleted();
-      }
-    };
-  }
-}
-</FindByNameRequest></UserEntity></FindByNameRequest></DeletedByIdRequest></DeletedByIdResponse></DeletedByIdRequest></UserEntity></UserEntity></UserEntity></UserEntity></pre>
-
-<h4 id="创建服务端"><a href="#创建服务端" class="headerlink" title="创建服务端"></a>创建服务端</h4><pre>
-@Component
-public class GrpcService {
-
-  private int port = 19090;
-  private Server server;
-
-  @Resource
-  private UserServiceGrpc.UserServiceImplBase userService;
-
-  @PostConstruct
-  public void init() throws IOException {
-    ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true)
-                                                            .setNameFormat("grpc-server-thread-%d")
-                                                            .build();
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(10,
-                                                         100,
-                                                         60L,
-                                                         TimeUnit.SECONDS,
-                                                         new LinkedBlockingQueue<>(),
-                                                         threadFactory,
-                                                         new ThreadPoolExecutor.CallerRunsPolicy());
-    server = ServerBuilder.forPort(port)
-                          .addService(userService)
-                          .executor(executor).build();
-    server.start();
-  }
-
-  @PreDestroy
-  public void destroy() {
-    if (server != null) {
-      server.shutdown();
-    }
-  }
-
-}
-</pre>
-
-<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/21/database/postgresql/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xiaohua Dong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/dxh.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="隔壁董小花同学">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/21/database/postgresql/" itemprop="url">PostgreSql</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T11:36:10+08:00">
-                2018-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="psql常用命令"><a href="#psql常用命令" class="headerlink" title="psql常用命令"></a>psql常用命令</h3><h5 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h5><p>psql -h [ip] -U [username] -d [databases]</p>
-<ul>
-<li>创建schema<br>CREATE SCHEMA my_schema;<br>GRANT ALL ON SCHEMA my_schema TO my_user;</li>
-<li>查看当前schema<br>SHOW search_path;</li>
-<li>查询数据库下所有schema<br>select * from information_schema.schemata;</li>
-<li>查询指定schema下所有表<br>select * from information_schema.tables where table_schema=’audit’;</li>
-<li>切换schema（连接级）<br>set search_path to my_schema;</li>
-<li>改变默认schema（数据库级）<br>ALTER database “my_database” SET search_path TO my_schema;</li>
-<li>指定schema查询<br>select count(*) from audit.fxk_pg_oplog;</li>
-</ul>
-<h3 id="pg基础知识与基本操作"><a href="#pg基础知识与基本操作" class="headerlink" title="pg基础知识与基本操作"></a>pg基础知识与基本操作</h3><p><span style="color:red">查询pg库的所有表名称</span><br>select tablename from pg_tables where schemaname=’public’;<br><span style="color:red">获取pg表的字段</span><br>select column_name from information_schema.columns<br>where table_name = ‘db_job’;</p>
-<p><span style="color:red">–查看当前活动的客户端连接数</span><br> SELECT count(*) FROM pg_stat_activity WHERE NOT pid=pg_backend_pid();<br><span style="color:red">–查看PostgreSQL正在执行的SQL</span><br>SELECT<br>    procpid,<br>    start,<br>    now() - start AS lap,<br>    current_query<br>FROM<br>    (SELECT<br>        backendid,<br>        pg_stat_get_backend_pid(S.backendid) AS procpid,<br>        pg_stat_get_backend_activity_start(S.backendid) AS start,<br>       pg_stat_get_backend_activity(S.backendid) AS current_query<br>    FROM<br>        (SELECT pg_stat_get_backend_idset() AS backendid) AS S<br>    ) AS S ,pg_stat_activity pa<br>WHERE<br>   current_query &lt;&gt; ‘<IDLE>‘ and  procpid&lt;&gt; pg_backend_pid() and pa.pid=s.procpid and pa.state&lt;&gt;’idle’<br>ORDER BY<br>   lap DESC;<br><span style="color:red">–查看当前库表和索引的的大小并排序显示前20条</span><br>SELECT<br>nspname,<br>relname,<br>relkind as “type”,<br>pg_size_pretty(pg_table_size(C.oid)) AS size,<br>pg_size_pretty(pg_indexes_size(C.oid)) AS idxsize,<br>pg_size_pretty(pg_total_relation_size(C.oid)) as “total”<br>FROM pg_class C<br>LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)<br>WHERE nspname NOT IN (‘pg_catalog’, ‘information_schema’) AND<br>nspname !~ ‘^pg_toast’ AND<br>relkind IN (‘r’,’i’)<br>ORDER BY pg_total_relation_size(C.oid) DESC<br>LIMIT 20; </IDLE></p>
-<span style="color:blue">
-procpid：进程id  
-start：进程开始时间  
-lap：经过时间  
-current_query：执行中的sql  
-怎样停止正在执行的sql  
-SELECT pg_cancel_backend(进程id);  
-或者用系统函数  
-kill -9 进程id;
---查找是否有waiting  
-ps -ef|grep postgres | grep wait
-</span>
-
-<p>排序：ORDER BY 字段 DESC<br><span style="color:red">模糊不区分大小写查询：</span>UPPER(字段) LIKE UPPER(‘%${search}%’)<br><span style="color:red">查指定条数：</span>LIMIT 长度 OFFSET 起始位置</p>
-<p>关联查询：<br>SELECT fail_count<br>FROM test_report AS  f<br>INNER JOIN(SELECT MAX(id) AS b_id FROM test_build WHERE job_id = #{jobId})  r<br>ON f.build_id = r.b_id</p>
-<p><span style="color:red">去重返回</span><br>SELECT <span style="color:red">DISTINCT</span><br>    T.parent_id<br>FROM<br>    db_task AS T<br>INNER JOIN db_job AS j ON T.status IN (<br>    ‘running’,<br>    ‘initComplete’,<br>    ‘fail’<br>)<br>AND j.status IN (‘created’, ‘dispatched’)</p>
-<h4 id="输入到文件"><a href="#输入到文件" class="headerlink" title="输入到文件"></a>输入到文件</h4><ul>
-<li>将查询语句写入文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; \w &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure></li>
-<li>将查询结果输入到文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; \o &#x2F;txt</span><br><span class="line">&gt; select...</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2354,7 +2152,7 @@ ps -ef|grep postgres | grep wait
               
                 <a href="/archives/%7C%7Carchive">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2365,7 +2163,7 @@ ps -ef|grep postgres | grep wait
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2376,7 +2174,7 @@ ps -ef|grep postgres | grep wait
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
