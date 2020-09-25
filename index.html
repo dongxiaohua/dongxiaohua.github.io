@@ -1326,7 +1326,17 @@ RateLimiter batchRateLimiter = RateLimiter.create(batchSlowDataRate)
 
 </li>
 </ul>
-<h3 id="小记"><a href="#小记" class="headerlink" title="小记"></a>小记</h3><pre><code>修改添加到source中的字段的mapping，可通过 POST my_index/_update_by_query?conflicts=proceed 来重新索引数据</code></pre>
+<h3 id="小记"><a href="#小记" class="headerlink" title="小记"></a>小记</h3><pre><code>修改添加到source中的字段的mapping，可通过 POST my_index/_update_by_query?conflicts=proceed 来重新索引数据</code></pre><h3 id="curl查询es"><a href="#curl查询es" class="headerlink" title="curl查询es"></a>curl查询es</h3><ul>
+<li><p>Authorization认证 Basic方式 后续编码属于 用户名：密码 用base64方式编码的结果  </p>
+</li>
+<li><p>查看索引<br>curl -XGET -H’Authorization: Basic {basic.authentication}’ ‘http://{ip:port}/_cat/indices/{index_name}*’</p>
+</li>
+<li><p>创建索引<br>curl -XPUT -H’Authorization: Basic {basic.authentication}’ ‘http://{ip:port}/{index_name}’</p>
+</li>
+<li><p>查模版<br>curl -XGET -H’Authorization: Basic {basic.authentication}’ ‘http://{ip:port}/_templates/{template_name}’<br>curl -XGET -H’Authorization: Basic {basic.authentication}’ ‘http://{ip:port}/_template/{template_name}?pretty’</p>
+</li>
+</ul>
+
           
         
       
