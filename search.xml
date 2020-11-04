@@ -735,8 +735,8 @@ public class GrpcService {
 <li>将文件远程复制</li>
 </ul>
 <ol>
-<li>将本地文件复制到远程： scp tl.out <a href="mailto:root@47.104.229.246">root@47.104.229.246</a>:/tl.out</li>
-<li>将远程文件复制到本地： scp <a href="mailto:root@47.104.229.246">root@47.104.229.246</a>:/root/tl.out tl.out</li>
+<li>将本地文件复制到远程：  scp {local txt} {userName}@{ip}:/{txt}</li>
+<li>将远程文件复制到本地： scp {usreName}@{ip}:/root/{txt}</li>
 </ol>
 </li>
 </ul>
@@ -1644,5 +1644,10 @@ RateLimiter batchRateLimiter = RateLimiter.create(batchSlowDataRate)
       <tags>
         <tag>thread</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>database/mysql_index</title>
+    <url>/2020/10/14/database/mysql_index/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
